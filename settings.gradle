@@ -1,0 +1,2 @@
+rootProject.name = "solfit_bluetooth_android"
+include ':app'

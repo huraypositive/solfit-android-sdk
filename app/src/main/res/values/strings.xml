@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">solfit_bluetooth_android</string>
+    <string name="error_denied_permission">권한을 거부하면 블루투스 서비스를 사용할 수 없습니다.\n\n[설정] > [권한]에서 권한을 설정하세요.</string>
+</resources>
