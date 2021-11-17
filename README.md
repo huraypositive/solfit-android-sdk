@@ -75,5 +75,5 @@ android:required="true"/>
 -----------
  * Step 1. GitHub에서 TAG 생성
  * Step 2. 생성한 TAG Release
- * Step 3. https://jitpack.io/ 홈페이지 접속 후, GitHub repo url 입력('hurayPositive/solfit-android-sdk)
+ * Step 3. https://jitpack.io/ 홈페이지 접속 후, GitHub repo url 입력('hurayPositive/solfit-android-sdk')
  * Step 4. 로그 확인을 통해 정상적으로 Publish 되었는지 확인
