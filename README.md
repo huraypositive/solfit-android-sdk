@@ -1,5 +1,5 @@
 # SolfitBluetooth
-=================
+-----------------
 블루투스 기기 통신을 위한 라이브러리
 
 # Compatibility
@@ -41,16 +41,16 @@ build.gradle(App)
 ~~~xml
 <!--In most cases, you need to ensure that the device supports BLE .-->
 <uses-feature
-android:name = "android.hardware.bluetooth_le"
-android:required = "true" />
-<uses-permission android:name = "android.permission.BLUETOOTH" />
-<uses-permission android:name = "android.permission.BLUETOOTH_ADMIN" />
+android:name="android.hardware.bluetooth_le"
+android:required="true"/>
+<uses-permission android:name="android.permission.BLUETOOTH"/>
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 <!-- Android 6.0 and above. Bluetooth scanning requires one of the following two permissions. You need to apply at run time .-->
-<uses-permission android:name = "android.permission.ACCESS_COARSE_LOCATION" />
-<uses-permission android:name = "android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 <!-- Optional. If your app need dfu function .-->
-<uses-permission android:name = "android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ~~~
 
 # Usage
@@ -73,3 +73,7 @@ android:required = "true" />
 
 # Release
 -----------
+ * Step 1. GitHub에서 TAG 생성
+ * Step 2. 생성한 TAG Release
+ * Step 3. https://jitpack.io/ 홈페이지 접속 후, GitHub repo url 입력('hurayPositive/solfit-android-sdk)
+ * Step 4. 로그 확인을 통해 정상적으로 Publish 되었는지 확인
