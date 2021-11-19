@@ -24,6 +24,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import net.huray.solfit.bluetooth.callbacks.*
+import net.huray.solfit.bluetooth.data.UserInfo
 import java.lang.Exception
 
 //BleProfileServiceReadyActivity 역할
@@ -33,6 +34,9 @@ class SolfitBluetoothService: Service() {
     private var mService: WBYBinder? = null
     private var mIsScanning = false
     private var adapter: BluetoothAdapter? = null
+
+    private lateinit var user: UserInfo
+    private lateinit var algorithmInfo: AlgorithmInfo
 
     // Interface
     private var bluetoothBondCallbacks: BluetoothBondCallbacks? = null
@@ -154,8 +158,8 @@ class SolfitBluetoothService: Service() {
                             cmd = intent.getStringExtra(EXTRA_CMD) ?: ""
                             onGetCMD(cmd)
                         } else if (ACTION_ALGORITHM_INFO == action) {
-                            val algorithmInfo =
-                                intent.getSerializableExtra(EXTRA_ALGORITHM_INFO) as AlgorithmInfo?
+                            algorithmInfo =
+                                intent.getSerializableExtra(EXTRA_ALGORITHM_INFO) as AlgorithmInfo
                             bluetoothDataCallbacks?.onGetAlgorithmInfo(algorithmInfo)
                         } else if (ACTION_SET_MODE == action) {
                             status = intent.getBooleanExtra(
@@ -314,8 +318,52 @@ class SolfitBluetoothService: Service() {
         }
     }
 
+    fun setUserData(sex: Int, age: Int, height: Int, weight: Float){
+        user = UserInfo(sex,age,height,weight)
+    }
+
+    private fun getBodyFat() =  AicareBleConfig.getBodyFatData(
+        algorithmInfo.algorithmId,
+        user.sex,
+        user.age,
+        ParseData.getKgWeight((user.weight * 10).toDouble(), algorithmInfo.decimalInfo).toDouble(),
+        user.height,algorithmInfo.adc
+    )
+
+    fun getBodyFatRate() = getBodyFat().bfr.toFloat()
+
+    fun getMuscleMass() = AicareBleConfig.getMoreFatData(
+        user.sex,
+        user.height,
+        user.weight.toDouble(),
+        getBodyFatRate().toDouble(),
+        getBodyFat().rom,
+        getBodyFat().pp
+    ).muscleMass.toFloat()
+
     fun onGetWeightData(weightData: WeightData){
         bluetoothDataCallbacks?.onGetWeightData(weightData)
+    }
+
+    fun setWeightData(broad: BroadData){
+
+    }
+
+    fun getBodyFatData() {
+        val bodyFatData =
+        AicareBleConfig.getBodyFatData(
+            algorithmInfo.algorithmId,
+            user.sex,
+            user.age,
+            ParseData.getKgWeight((user.weight * 10).toDouble(), algorithmInfo!!.decimalInfo)
+                .toDouble(),
+            user.height,
+            algorithmInfo.adc
+        )
+    }
+
+    fun getMuscleMassData() {
+
     }
 
     fun onGetDID(did: Int){}
