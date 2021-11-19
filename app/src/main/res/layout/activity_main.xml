@@ -7,6 +7,7 @@
     tools:context=".SolfitBluetooth">
 
     <TextView
+        android:id="@+id/textV_hello_world"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"

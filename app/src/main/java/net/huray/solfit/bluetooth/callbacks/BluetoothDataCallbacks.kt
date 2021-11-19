@@ -12,9 +12,9 @@ interface BluetoothDataCallbacks {
 
     fun onGetResult(index: Int, result: String)
 
-    fun onGetFatData(b: Boolean, bodyFatData: BodyFatData)
+    fun onGetFatData(b: Boolean, bodyFatData: BodyFatData?)
 
-    fun onGetDecimalInfo(decimalInfo: DecimalInfo)
+    fun onGetDecimalInfo(decimalInfo: DecimalInfo?)
 
-    fun onGetAlgorithmInfo(algorithmInfo: AlgorithmInfo)
+    fun onGetAlgorithmInfo(algorithmInfo: AlgorithmInfo?)
 }
