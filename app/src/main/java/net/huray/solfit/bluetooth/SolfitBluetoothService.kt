@@ -24,7 +24,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import net.huray.solfit.bluetooth.callbacks.*
-import net.huray.solfit.bluetooth.utility.*
 import java.lang.Exception
 
 //BleProfileServiceReadyActivity 역할
