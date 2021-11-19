@@ -11,10 +11,12 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.PersistableBundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import net.huray.solfit.bluetooth.callbacks.BluetoothBondCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothDeviceCallbacks
+
 
 class UserActivity: AppCompatActivity() {
     private var solfitBluetoothService: SolfitBluetoothService? = null
@@ -37,7 +39,8 @@ class UserActivity: AppCompatActivity() {
                 },
                 bluetoothDeviceCallbacks = object: BluetoothDeviceCallbacks{
                     override fun getAicareDevice(broadData: BroadData) {
-                        Log.d("UserActivity","getAicareDevice called")
+                        val textViewGetDeviceList = findViewById<TextView>(R.id.textV_get_device)
+                        textViewGetDeviceList.text = broadData.address.toString()
                     }
                 })
             if(!serviceInitialize!!) {
@@ -57,18 +60,22 @@ class UserActivity: AppCompatActivity() {
 
         //Solfitbluetooth Setting
         AiFitSDK.getInstance().init(this)
-        setSolfitBluetooth()
-
-
-        val textView = findViewById<TextView>(R.id.textV_hello_world)
-        textView.setOnClickListener {
-            callBindServiceTest()
-        }
-    }
-
-    fun setSolfitBluetooth(){
         serviceBind()
-        callBindServiceTest()
+
+
+        val buttonStartScan = findViewById<Button>(R.id.button_start_scan)
+        buttonStartScan.setOnClickListener {
+            if(isServiceConnected) {
+                solfitBluetoothService?.startScan()
+            }
+        }
+
+        val buttonStopScan = findViewById<Button>(R.id.button_stop_scan)
+        buttonStopScan.setOnClickListener {
+            if(isServiceConnected) {
+                solfitBluetoothService?.stopScan()
+            }
+        }
     }
 
     fun serviceBind() {
@@ -80,12 +87,6 @@ class UserActivity: AppCompatActivity() {
         if(isServiceConnected) {
             unbindService(serviceConnection)
             isServiceConnected = false
-        }
-    }
-
-    fun callBindServiceTest(){
-        if(isServiceConnected) {
-            solfitBluetoothService?.startScan()
         }
     }
 }

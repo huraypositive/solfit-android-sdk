@@ -303,7 +303,7 @@ class SolfitBluetoothService: Service() {
         }
     }
 
-    private fun stopScan() {
+    fun stopScan() {
         handler.removeCallbacks(startScanRunnable)
         handler.removeCallbacks(stopScanRunnable)
         if (mIsScanning) {
