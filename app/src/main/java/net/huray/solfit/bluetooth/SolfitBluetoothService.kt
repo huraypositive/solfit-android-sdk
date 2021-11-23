@@ -312,11 +312,11 @@ class SolfitBluetoothService : Service() {
                     handler.postDelayed(stopScanRunnable, 60000L)
                 }
             } else {
-                showBLEDialog()
                 bluetoothScanCallbacks?.onScan(
                     STATE_FAIL,
                     resources.getString(R.string.error_bluetooth_not_enabled), null
                 )
+                showBLEDialog()
             }
         }
     }
@@ -398,10 +398,8 @@ class SolfitBluetoothService : Service() {
 
     protected fun showBLEDialog() {
         val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        //블루투스 Enable
-        //기존에 StartActivityForResult 메소드 사용했엇는데 변경.
-        //TODO('requires android.permission.BLUETOOTH_CONNECT 이슈 확인')
-        //startActivity(enableIntent)
+        enableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(enableIntent)
     }
 
     inner class ServiceBinder : Binder() {
