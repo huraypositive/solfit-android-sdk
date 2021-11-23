@@ -6,13 +6,11 @@ import aicare.net.cn.iweightlibrary.entity.DecimalInfo
 import aicare.net.cn.iweightlibrary.entity.WeightData
 
 interface BluetoothDataCallbacks {
-    fun onGetWeightData(weightData: Double?)
+    fun onGetMeasureStatus(status: Int)
 
-    fun onGetFatData(b: Boolean, bodyFatData: BodyFatData?)
+    fun onGetWeightData(weightData: Double?)
 
     fun onGetMuscleMass(muscleMass: Float?)
 
     fun onGetFatRate(fatRate: Float?)
-
-    fun onGetMeasureStatus(status: Int)
 }

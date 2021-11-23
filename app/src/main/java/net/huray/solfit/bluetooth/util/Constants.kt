@@ -6,3 +6,7 @@ const val STATE_SERVICE_DISCOVERED = 2
 const val STATE_INDICATION_SUCCESS = 3
 const val STATE_CONNECTING = 4
 const val STATE_TIME_OUT = 5
+
+const val STATE_FAIL = 0
+const val STATE_SCANNING = 1
+const val STATE_STOPPED = 2

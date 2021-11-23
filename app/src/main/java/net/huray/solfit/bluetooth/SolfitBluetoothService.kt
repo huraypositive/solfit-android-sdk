@@ -19,6 +19,9 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import net.huray.solfit.bluetooth.callbacks.*
 import net.huray.solfit.bluetooth.data.UserInfo
+import net.huray.solfit.bluetooth.util.STATE_FAIL
+import net.huray.solfit.bluetooth.util.STATE_SCANNING
+import net.huray.solfit.bluetooth.util.STATE_STOPPED
 import java.lang.Exception
 
 //BleProfileServiceReadyActivity 역할
@@ -32,12 +35,12 @@ class SolfitBluetoothService : Service() {
     private lateinit var userInfo: UserInfo
     private lateinit var algorithmInfo: AlgorithmInfo
     private var mWeight: Double? = 0.0
+    private var mBroadDataList: HashSet<BroadData>? = null
 
     // Interface
-    private var bluetoothBondCallbacks: BluetoothBondCallbacks? = null
     private var bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null
     private var bluetoothDataCallbacks: BluetoothDataCallbacks? = null
-    private var bluetoothDeviceCallbacks: BluetoothDeviceCallbacks? = null
+    private var bluetoothScanCallbacks: BluetoothScanCallbacks? = null
     private var bluetoothETCCallback: BluetoothETCCallbacks? = null
 
     private val handler = Handler()
@@ -77,7 +80,7 @@ class SolfitBluetoothService : Service() {
                 val broadData = AicareBleConfig.getBroadData(device, rssi, scanRecord)
                 if (broadData != null) {
                     handler.post {
-                        bluetoothDeviceCallbacks?.getAicareDevice(broadData)
+                        bluetoothScanCallbacks?.onScan(STATE_SCANNING, null, broadData)
                     }
                 }
             }
@@ -171,19 +174,19 @@ class SolfitBluetoothService : Service() {
     }
 
     fun initilize(
-        bluetoothBondCallbacks: BluetoothBondCallbacks? = null,
         bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null,
         bluetoothDataCallbacks: BluetoothDataCallbacks? = null,
-        bluetoothDeviceCallbacks: BluetoothDeviceCallbacks? = null,
-    ): Boolean {
-        this.bluetoothBondCallbacks = bluetoothBondCallbacks
+        bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
+        bluetoothETCCallback: BluetoothETCCallbacks? = null
+    ){
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
-        this.bluetoothDeviceCallbacks = bluetoothDeviceCallbacks
-        return isBLEEnabled()
+        this.bluetoothScanCallbacks = bluetoothScanCallbacks
+        this.bluetoothETCCallback = bluetoothETCCallback
     }
 
     private fun onInitialize() {
+        mBroadDataList = HashSet()
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         adapter = bluetoothManager.adapter
     }
@@ -302,6 +305,8 @@ class SolfitBluetoothService : Service() {
                 }
             } else {
                 showBLEDialog()
+                bluetoothScanCallbacks?.onScan(STATE_FAIL,
+                    resources.getString(R.string.error_bluetooth_not_enabled), null)
             }
         }
     }
@@ -311,6 +316,7 @@ class SolfitBluetoothService : Service() {
         handler.removeCallbacks(stopScanRunnable)
         if (mIsScanning) {
             if (adapter != null) {
+                bluetoothScanCallbacks?.onScan(STATE_STOPPED,null,null)
                 adapter!!.stopLeScan(mLEScanCallback)
             }
             mIsScanning = false
@@ -367,10 +373,10 @@ class SolfitBluetoothService : Service() {
     }
 
     fun onServiceBinded(wbyBinder: WBYBinder?) {
-        bluetoothBondCallbacks?.onServiceBinded(wbyBinder)
+        bluetoothETCCallback?.onServiceBinded(wbyBinder)
     }
     fun onServiceUnbinded() {
-        bluetoothBondCallbacks?.onServiceUnbinded()
+        bluetoothETCCallback?.onServiceUnbinded()
     }
 
     protected fun showBLEDialog() {
