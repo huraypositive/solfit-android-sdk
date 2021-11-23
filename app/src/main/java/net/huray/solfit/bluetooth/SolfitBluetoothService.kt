@@ -2,6 +2,7 @@ package net.huray.solfit.bluetooth
 
 import aicare.net.cn.iweightlibrary.AiFitSDK
 import aicare.net.cn.iweightlibrary.entity.*
+import aicare.net.cn.iweightlibrary.entity.BroadData.AddressComparator
 import aicare.net.cn.iweightlibrary.utils.AicareBleConfig
 import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.*
 import aicare.net.cn.iweightlibrary.utils.ParseData
@@ -33,7 +34,7 @@ class SolfitBluetoothService : Service() {
     private lateinit var userInfo: UserInfo
     private lateinit var algorithmInfo: AlgorithmInfo
     private var mWeight: Double? = 0.0
-    private var mBroadDataList: HashSet<BroadData>? = null
+    private val mDeviceList = ArrayList<BroadData>()
 
     // Interface
     private var bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null
@@ -66,6 +67,7 @@ class SolfitBluetoothService : Service() {
 
         override fun onServiceDisconnected(name: ComponentName) {
             mService = null
+            mDeviceList.clear()
             onServiceUnbinded()
         }
     }
@@ -81,8 +83,9 @@ class SolfitBluetoothService : Service() {
                 Log.e(TAG, ParseData.byteArr2Str(scanRecord))
                 val broadData = AicareBleConfig.getBroadData(device, rssi, scanRecord)
                 if (broadData != null) {
+                    addDevice(broadData)
                     handler.post {
-                        bluetoothScanCallbacks?.onScan(STATE_SCANNING, null, broadData)
+                        bluetoothScanCallbacks?.onScan(STATE_SCANNING, null, mDeviceList)
                     }
                 }
             }
@@ -188,19 +191,18 @@ class SolfitBluetoothService : Service() {
     }
 
     fun initilize(
+        bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
         bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null,
         bluetoothDataCallbacks: BluetoothDataCallbacks? = null,
-        bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
         bluetoothETCCallback: BluetoothETCCallbacks? = null
     ) {
+        this.bluetoothScanCallbacks = bluetoothScanCallbacks
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
-        this.bluetoothScanCallbacks = bluetoothScanCallbacks
         this.bluetoothETCCallback = bluetoothETCCallback
     }
 
     private fun onInitialize() {
-        mBroadDataList = HashSet()
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         adapter = bluetoothManager.adapter
     }
@@ -328,6 +330,12 @@ class SolfitBluetoothService : Service() {
                 adapter!!.stopLeScan(mLEScanCallback)
             }
             mIsScanning = false
+        }
+    }
+
+    private fun addDevice(device: BroadData){
+        if(!mDeviceList.contains(device)){
+            mDeviceList.add(device)
         }
     }
 

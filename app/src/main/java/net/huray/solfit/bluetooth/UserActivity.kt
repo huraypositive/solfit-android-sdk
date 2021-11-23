@@ -31,6 +31,23 @@ class UserActivity : AppCompatActivity() {
             solfitBluetoothService = serviceBinder.getService().apply {
                 setUserInfo(1, 33, 175)
                 initilize(
+                    bluetoothScanCallbacks = object : BluetoothScanCallbacks {
+                        override fun onScan(state: Int, errorMsg: String?, deviceList: List<BroadData>?) {
+                            val textVScanResult = findViewById<TextView>(R.id.textV_scan_result)
+                            when (state) {
+                                STATE_FAIL -> textVScanResult.text = errorMsg
+                                STATE_SCANNING -> {
+                                    var deviceListString = ""
+                                    for(index in deviceList!!){
+                                        deviceListString += index.address.toString() + "\n"
+                                    }
+                                    textVScanResult.text = deviceListString
+                                }
+
+                                STATE_STOPPED -> {}
+                            }
+                        }
+                    },
                     bluetoothConnectionCallbacks = object : BluetoothConnectionCallbacks {
                         override fun onStateChanged(
                             deviceAddress: String?,
@@ -52,18 +69,6 @@ class UserActivity : AppCompatActivity() {
                             }
                         }
 
-                    },
-                    bluetoothScanCallbacks = object : BluetoothScanCallbacks {
-                        override fun onScan(state: Int, errorMsg: String?, broadData: BroadData?) {
-                            val textVScanResult = findViewById<TextView>(R.id.textV_scan_result)
-                            when (state) {
-                                STATE_FAIL -> textVScanResult.text = errorMsg
-                                STATE_SCANNING ->
-                                    textVScanResult.text = broadData?.address.toString()
-
-                                STATE_STOPPED -> textVScanResult.text = "STOPPED"
-                            }
-                        }
                     },
                     bluetoothDataCallbacks = object : BluetoothDataCallbacks {
                         override fun onGetWeight(state: Int, weightData: Double?) {
