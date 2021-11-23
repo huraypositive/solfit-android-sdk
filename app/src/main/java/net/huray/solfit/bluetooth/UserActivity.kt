@@ -32,7 +32,12 @@ class UserActivity: AppCompatActivity() {
                 setUserInfo(1,33,175)
                 initilize(
                     bluetoothConnectionCallbacks = object: BluetoothConnectionCallbacks {
-                        override fun onStateChanged(deviceAddress: String?, state: Int) {
+                        override fun onStateChanged(
+                            deviceAddress: String?,
+                            state: Int,
+                            errMsg: String?,
+                            errCode: Int?
+                        ) {
                             findViewById<TextView>(R.id.textV_get_connect_state_chagne).apply {
                                 text = when(state) {
                                     STATE_DISCONNECTED -> "DISCONNECTED"
@@ -41,16 +46,12 @@ class UserActivity: AppCompatActivity() {
                                     STATE_SERVICE_DISCOVERED -> "SERVICE_DISCOVERED"
                                     STATE_CONNECTING -> "CONNECTING"
                                     STATE_TIME_OUT -> "TIMEOUT"
+                                    STATE_ERROR -> "ERROR"
                                     else -> "Exception"
                                 }
                             }
                         }
 
-                        override fun onError(s: String?, i: Int) {
-                            findViewById<TextView>(R.id.textV_get_connect_state_chagne).apply{
-                                text = "On Error Called:$s"
-                            }
-                        }
                     },
                     bluetoothScanCallbacks = object: BluetoothScanCallbacks{
                         override fun onScan(state: Int, errorMsg: String?, broadData: BroadData?) {

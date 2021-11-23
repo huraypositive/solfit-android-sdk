@@ -97,14 +97,14 @@ class SolfitBluetoothService : Service() {
                 if (ACTION_CONNECT_STATE_CHANGED == action) {
                     did = intent.getIntExtra(EXTRA_CONNECT_STATE, -1)
                     result = intent.getStringExtra(EXTRA_DEVICE_ADDRESS)
-                    bluetoothConnectionCallbacks?.onStateChanged(result, did)
+                    bluetoothConnectionCallbacks?.onStateChanged(result, did, null, null)
                 } else {
                     val cmd: String?
                     if (ACTION_CONNECT_ERROR == action) {
                         cmd = intent.getStringExtra(EXTRA_ERROR_MSG)
                         val errCode =
                             intent.getIntExtra(EXTRA_ERROR_CODE, -1)
-                        bluetoothConnectionCallbacks?.onError(cmd, errCode)
+                        bluetoothConnectionCallbacks?.onStateChanged(null, STATE_ERROR, cmd, errCode)
                     } else if (ACTION_WEIGHT_DATA == action) {
                         val weightData =
                             intent.getSerializableExtra(EXTRA_WEIGHT_DATA) as WeightData
