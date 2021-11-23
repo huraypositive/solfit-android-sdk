@@ -23,7 +23,6 @@ import net.huray.solfit.bluetooth.data.UserInfo
 import net.huray.solfit.bluetooth.util.*
 import java.lang.Exception
 
-//BleProfileServiceReadyActivity 역할
 class SolfitBluetoothService : Service() {
     private val TAG = this::class.java.simpleName
     private val binder = ServiceBinder()
@@ -57,7 +56,11 @@ class SolfitBluetoothService : Service() {
 
             onServiceBinded(bleService)
             if (bleService.isConnected) {
-                onStateChanged(bleService.deviceAddress, 1)
+                bluetoothConnectionCallbacks?.onStateChanged(
+                    bleService.deviceAddress,
+                    net.huray.solfit.bluetooth.util.STATE_CONNECTED,
+                    null, null
+                )
             }
         }
 
@@ -104,18 +107,23 @@ class SolfitBluetoothService : Service() {
                         cmd = intent.getStringExtra(EXTRA_ERROR_MSG)
                         val errCode =
                             intent.getIntExtra(EXTRA_ERROR_CODE, -1)
-                        bluetoothConnectionCallbacks?.onStateChanged(null, STATE_ERROR, cmd, errCode)
+                        bluetoothConnectionCallbacks?.onStateChanged(
+                            null,
+                            STATE_ERROR,
+                            cmd,
+                            errCode
+                        )
                     } else if (ACTION_WEIGHT_DATA == action) {
                         val weightData =
                             intent.getSerializableExtra(EXTRA_WEIGHT_DATA) as WeightData
                         onGetWeightData(weightData)
                     } else if (ACTION_SETTING_STATUS_CHANGED == action) {
                         did = intent.getIntExtra(EXTRA_SETTING_STATUS, -1)
-                        when(did){
+                        when (did) {
                             NORMAL, LOW_POWER
-                                -> bluetoothDataCallbacks?.onGetWeight(did,null)
+                            -> bluetoothDataCallbacks?.onGetWeight(did, null)
                             ADC_MEASURED_ING, ADC_ERROR
-                                -> bluetoothDataCallbacks?.onGetBodyComposition(did,null,null)
+                            -> bluetoothDataCallbacks?.onGetBodyComposition(did, null, null)
                         }
                     } else if (ACTION_RESULT_CHANGED == action) {
                         did = intent.getIntExtra(EXTRA_RESULT_INDEX, -1)
@@ -161,8 +169,11 @@ class SolfitBluetoothService : Service() {
                         } else if (ACTION_ALGORITHM_INFO == action) {
                             algorithmInfo =
                                 intent.getSerializableExtra(EXTRA_ALGORITHM_INFO) as AlgorithmInfo
-                            bluetoothDataCallbacks?.
-                                    onGetBodyComposition(STATE_GET_BODY_COMPOSITION_SUCCESS,getBodyFatRate(),getMuscleMass())
+                            bluetoothDataCallbacks?.onGetBodyComposition(
+                                STATE_GET_BODY_COMPOSITION_SUCCESS,
+                                getBodyFatRate(),
+                                getMuscleMass()
+                            )
                         } else if (ACTION_SET_MODE == action) {
                             status = intent.getBooleanExtra(
                                 EXTRA_SET_MODE,
@@ -181,7 +192,7 @@ class SolfitBluetoothService : Service() {
         bluetoothDataCallbacks: BluetoothDataCallbacks? = null,
         bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
         bluetoothETCCallback: BluetoothETCCallbacks? = null
-    ){
+    ) {
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
         this.bluetoothScanCallbacks = bluetoothScanCallbacks
@@ -233,18 +244,10 @@ class SolfitBluetoothService : Service() {
     }
 
     fun disconnect() {
-        if(mIsScanning){
+        if (mIsScanning) {
             stopScan()
         }
         mService?.disconnect()
-    }
-
-    private fun onStateChanged(deviceAddress: String?, state: Int) {
-        when (state) {
-            BluetoothAdapter.STATE_DISCONNECTED -> unbindService()
-            else -> {
-            }
-        }
     }
 
     override fun onDestroy() {
@@ -308,8 +311,10 @@ class SolfitBluetoothService : Service() {
                 }
             } else {
                 showBLEDialog()
-                bluetoothScanCallbacks?.onScan(STATE_FAIL,
-                    resources.getString(R.string.error_bluetooth_not_enabled), null)
+                bluetoothScanCallbacks?.onScan(
+                    STATE_FAIL,
+                    resources.getString(R.string.error_bluetooth_not_enabled), null
+                )
             }
         }
     }
@@ -319,7 +324,7 @@ class SolfitBluetoothService : Service() {
         handler.removeCallbacks(stopScanRunnable)
         if (mIsScanning) {
             if (adapter != null) {
-                bluetoothScanCallbacks?.onScan(STATE_STOPPED,null,null)
+                bluetoothScanCallbacks?.onScan(STATE_STOPPED, null, null)
                 adapter!!.stopLeScan(mLEScanCallback)
             }
             mIsScanning = false
@@ -351,7 +356,7 @@ class SolfitBluetoothService : Service() {
 
     fun onGetWeightData(weightData: WeightData?) {
         mWeight = (weightData?.weight?.div(10f))
-        bluetoothDataCallbacks?.onGetWeight(STATE_GET_WEIGHT_SUCCESS,mWeight)
+        bluetoothDataCallbacks?.onGetWeight(STATE_GET_WEIGHT_SUCCESS, mWeight)
     }
 
     fun onGetDID(did: Int) {
@@ -372,12 +377,13 @@ class SolfitBluetoothService : Service() {
         encrypt: ByteArray?,
         isEquals: Boolean
     ) {
-        bluetoothETCCallback?.onGetAuthData(sources,bleReturn,encrypt,isEquals)
+        bluetoothETCCallback?.onGetAuthData(sources, bleReturn, encrypt, isEquals)
     }
 
     fun onServiceBinded(wbyBinder: WBYBinder?) {
         bluetoothETCCallback?.onServiceBinded(wbyBinder)
     }
+
     fun onServiceUnbinded() {
         bluetoothETCCallback?.onServiceUnbinded()
     }
