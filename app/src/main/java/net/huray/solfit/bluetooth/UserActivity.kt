@@ -2,6 +2,9 @@ package net.huray.solfit.bluetooth
 
 import aicare.net.cn.iweightlibrary.AiFitSDK
 import aicare.net.cn.iweightlibrary.entity.*
+import aicare.net.cn.iweightlibrary.utils.AicareBleConfig
+import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.LOW_POWER
+import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.NORMAL
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -62,26 +65,37 @@ class UserActivity: AppCompatActivity() {
                         }
                     },
                     bluetoothDataCallbacks = object: BluetoothDataCallbacks {
-                        override fun onGetWeightData(weightData: Double?) {
-                            findViewById<TextView>(R.id.textV_weight).text =
-                                "몸무게: "+ weightData.toString() +"kg"
+                        override fun onGetWeight(state: Int, weightData: Double?) {
+                            when(state) {
+                                STATE_GET_WEIGHT_START -> {}
+                                STATE_GET_WEIGHT_WAITING -> {}
+                                STATE_GET_WEIGHT_SUCCESS -> {
+                                    findViewById<TextView>(R.id.textV_weight).text = weightData.toString()
+                                }
+                            }
                         }
 
-                        override fun onGetMeasureStatus(status: Int) {
-                        }
-
-                        override fun onGetFatData(b: Boolean, bodyFatData: BodyFatData?) {
-                            //findViewById<TextView>(R.id.textV_body_fat).text = bodyFatData?.toString()
-                        }
-
-                        override fun onGetMuscleMass(muscleMass: Float?) {
-                            findViewById<TextView>(R.id.textV_muscle).text =
-                                "근육량: " +muscleMass.toString()+"kg"
-                        }
-
-                        override fun onGetFatRate(fatRate: Float?) {
-                            findViewById<TextView>(R.id.textV_body_fat).text =
-                                "체지방률:" + fatRate.toString()+"%"
+                        override fun onGetBodyComposition(
+                            state: Int,
+                            fatRate: Float?,
+                            muscleMass: Float?
+                        ) {
+                            val textVBodyFat = findViewById<TextView>(R.id.textV_body_fat)
+                            val textVMusclemass = findViewById<TextView>(R.id.textV_muscle)
+                            when(state) {
+                                STATE_GET_BODY_COMPOSITION_START -> {
+                                    textVBodyFat.text="측정중"
+                                    textVMusclemass.text="측정중"
+                                }
+                                STATE_GET_BODY_COMPOSITION_FAIL -> {
+                                    textVBodyFat.text="계산 실패"
+                                    textVMusclemass.text="계산 실패"
+                                }
+                                STATE_GET_BODY_COMPOSITION_SUCCESS -> {
+                                    textVBodyFat.text = fatRate.toString()
+                                    textVMusclemass.text = muscleMass.toString()
+                                }
+                            }
                         }
                     }
                 )

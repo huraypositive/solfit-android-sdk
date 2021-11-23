@@ -3,6 +3,7 @@ package net.huray.solfit.bluetooth
 import aicare.net.cn.iweightlibrary.AiFitSDK
 import aicare.net.cn.iweightlibrary.entity.*
 import aicare.net.cn.iweightlibrary.utils.AicareBleConfig
+import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.*
 import aicare.net.cn.iweightlibrary.utils.ParseData
 import aicare.net.cn.iweightlibrary.wby.WBYService
 import aicare.net.cn.iweightlibrary.wby.WBYService.*
@@ -19,9 +20,7 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import net.huray.solfit.bluetooth.callbacks.*
 import net.huray.solfit.bluetooth.data.UserInfo
-import net.huray.solfit.bluetooth.util.STATE_FAIL
-import net.huray.solfit.bluetooth.util.STATE_SCANNING
-import net.huray.solfit.bluetooth.util.STATE_STOPPED
+import net.huray.solfit.bluetooth.util.*
 import java.lang.Exception
 
 //BleProfileServiceReadyActivity 역할
@@ -112,7 +111,12 @@ class SolfitBluetoothService : Service() {
                         onGetWeightData(weightData)
                     } else if (ACTION_SETTING_STATUS_CHANGED == action) {
                         did = intent.getIntExtra(EXTRA_SETTING_STATUS, -1)
-                        bluetoothDataCallbacks?.onGetMeasureStatus(did)
+                        when(did){
+                            NORMAL, LOW_POWER
+                                -> bluetoothDataCallbacks?.onGetWeight(did,null)
+                            ADC_MEASURED_ING, ADC_ERROR
+                                -> bluetoothDataCallbacks?.onGetBodyComposition(did,null,null)
+                        }
                     } else if (ACTION_RESULT_CHANGED == action) {
                         did = intent.getIntExtra(EXTRA_RESULT_INDEX, -1)
                         result = intent.getStringExtra(EXTRA_RESULT) ?: ""
@@ -126,7 +130,7 @@ class SolfitBluetoothService : Service() {
                             )
                             val bodyFatData =
                                 intent.getSerializableExtra(EXTRA_FAT_DATA) as BodyFatData
-                            bluetoothDataCallbacks?.onGetFatData(status, bodyFatData)
+                            bluetoothETCCallback?.onGetFatData(status, bodyFatData)
                         } else if (ACTION_AUTH_DATA == action) {
                             val sources =
                                 intent.getByteArrayExtra(EXTRA_SOURCE_DATA)
@@ -157,9 +161,8 @@ class SolfitBluetoothService : Service() {
                         } else if (ACTION_ALGORITHM_INFO == action) {
                             algorithmInfo =
                                 intent.getSerializableExtra(EXTRA_ALGORITHM_INFO) as AlgorithmInfo
-                            bluetoothDataCallbacks?.onGetFatRate(getBodyFatRate())
-                            bluetoothDataCallbacks?.onGetMuscleMass(getMuscleMass())
-                            //bluetoothETCCallback?.onGetAlgorithmInfo(algorithmInfo)
+                            bluetoothDataCallbacks?.
+                                    onGetBodyComposition(STATE_GET_BODY_COMPOSITION_SUCCESS,getBodyFatRate(),getMuscleMass())
                         } else if (ACTION_SET_MODE == action) {
                             status = intent.getBooleanExtra(
                                 EXTRA_SET_MODE,
@@ -348,7 +351,7 @@ class SolfitBluetoothService : Service() {
 
     fun onGetWeightData(weightData: WeightData?) {
         mWeight = (weightData?.weight?.div(10f))
-        bluetoothDataCallbacks?.onGetWeightData(mWeight)
+        bluetoothDataCallbacks?.onGetWeight(STATE_GET_WEIGHT_SUCCESS,mWeight)
     }
 
     fun onGetDID(did: Int) {
