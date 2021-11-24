@@ -7,14 +7,14 @@ import net.huray.solfit.bluetooth.data.enums.WeightState
 
 interface BluetoothDataCallbacks {
 
-    // STATE: 측정 시작(STATE_GET_WEIGHT_START = 0)
-    //        대기 상태(STATE_GET_WEIGHT_WAITING = 1)
-    //        측정 성공(STATE_GET_WEIGHT_SUCCESS = 2)
+    // STATE: 측정 시작(WeightState_START = 0)
+    //        대기 상태(WeightState_WAITING = 1)
+    //        측정 성공(WeightState_SUCCESS = 2)
     fun onGetWeight(state: WeightState, weightData: Double?)
 
-    // STATE: 측정 시작(STATE_GET_BODY_COMPOSITION_START = 20)
-    //        측정 실패(STATE_GET_BODY_COMPOSITION_FAIL = 21)
-    //        측정 성공(STATE_GET_BODY_COMPOSITION_SUCCESS =22)
+    // STATE: 측정 시작(BodyCompositionState_START = 20)
+    //        측정 실패(BodyCompositionState_FAIL = 21)
+    //        측정 성공(BodyCompositionState_SUCCESS =22)
     fun onGetBodyComposition(state: BodyCompositionState, bodyFatData: BodyFatData?, moreFatData: MoreFatData?)
 }
 
