@@ -14,6 +14,8 @@ import android.os.IBinder
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import cn.net.aicare.MoreFatData
+import cn.net.aicare.algorithmutil.BodyFatData
 import net.huray.solfit.bluetooth.callbacks.BluetoothConnectionCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothDataCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothScanCallbacks
@@ -89,8 +91,8 @@ class UserActivity : AppCompatActivity() {
 
                         override fun onGetBodyComposition(
                             state: BodyCompositionState,
-                            fatRate: Float?,
-                            muscleMass: Float?
+                            bodyFatData: BodyFatData?,
+                            moreFatData: MoreFatData?
                         ) {
                             val textVBodyFat = findViewById<TextView>(R.id.textV_body_fat)
                             val textVMusclemass = findViewById<TextView>(R.id.textV_muscle)
@@ -104,8 +106,8 @@ class UserActivity : AppCompatActivity() {
                                     textVMusclemass.text = "계산 실패"
                                 }
                                 BodyCompositionState.SUCCESS -> {
-                                    textVBodyFat.text = fatRate.toString()
-                                    textVMusclemass.text = muscleMass.toString()
+                                    textVBodyFat.text = bodyFatData?.bfr.toString()
+                                    textVMusclemass.text = moreFatData?.muscleMass.toString()
                                 }
                                 BodyCompositionState.UNKNOWN -> {}
                             }

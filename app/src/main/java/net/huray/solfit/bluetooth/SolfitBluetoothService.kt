@@ -135,8 +135,8 @@ class SolfitBluetoothService : Service() {
                                 intent.getSerializableExtra(EXTRA_ALGORITHM_INFO) as AlgorithmInfo
                             bluetoothDataCallbacks?.onGetBodyComposition(
                                 BodyCompositionState.SUCCESS,
-                                getBodyFatRate(),
-                                getMuscleMass()
+                                getBodyFatData(),
+                                getMoreFatData()
                             )
                     }
                 }
@@ -304,14 +304,14 @@ class SolfitBluetoothService : Service() {
 
     fun getBodyFatRate() = getBodyFatData().bfr.toFloat()
 
-    fun getMuscleMass() = AicareBleConfig.getMoreFatData(
+    fun getMoreFatData() = AicareBleConfig.getMoreFatData(
         userInfo.sex,
         userInfo.height,
         mWeight!!,
         getBodyFatRate().toDouble(),
         getBodyFatData().rom,
         getBodyFatData().pp
-    ).muscleMass.toFloat()
+    )
 
     fun onGetWeightData(weightData: WeightData?) {
         mWeight = (weightData?.weight?.div(10f))
