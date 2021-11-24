@@ -1,4 +1,4 @@
-package net.huray.solfit.bluetooth.data
+package net.huray.solfit.bluetooth.data.datastore
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-class DataStoreModule(private val context : Context) {
+class UserInfoDataStore(private val context : Context) {
 
     private val Context.dataStore  by preferencesDataStore(name = "userinfo")
 
