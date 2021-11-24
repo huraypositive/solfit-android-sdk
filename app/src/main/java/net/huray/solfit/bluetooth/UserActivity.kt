@@ -19,6 +19,7 @@ import cn.net.aicare.algorithmutil.BodyFatData
 import net.huray.solfit.bluetooth.callbacks.BluetoothConnectionCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothDataCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothScanCallbacks
+import net.huray.solfit.bluetooth.data.UserInfo
 import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
 import net.huray.solfit.bluetooth.data.enums.ConnectState
 import net.huray.solfit.bluetooth.data.enums.ScanState
@@ -34,7 +35,7 @@ class UserActivity : AppCompatActivity() {
             isServiceConnected = true
             val serviceBinder = service as SolfitBluetoothService.ServiceBinder
             solfitBluetoothService = serviceBinder.getService().apply {
-                setUserInfo(1, 33, 175)
+                setUserInfo(UserInfo(1,33,175))
                 initilize(
                     this@UserActivity,
                     bluetoothScanCallbacks = object : BluetoothScanCallbacks {

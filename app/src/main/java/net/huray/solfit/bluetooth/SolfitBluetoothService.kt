@@ -312,8 +312,12 @@ open class SolfitBluetoothService : Service() {
         }
     }
 
-    fun setUserInfo(sex: Int = 1, age: Int = 25, height: Int = 174) {
-        userInfo = UserInfo(sex, age, height)
+    private fun setUserInfo(userInfo: UserInfo) {
+        this.userInfo = userInfo
+    }
+
+    private fun saveUserInfo() {
+
     }
 
     private fun getBodyFatData() = AicareBleConfig.getBodyFatData(
