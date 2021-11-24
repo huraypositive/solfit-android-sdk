@@ -23,5 +23,6 @@ interface BluetoothDataCallbacks {
  * todo
 enum
 fatdata, musclemass
+
 유저정보, 디바이스정보 저
 **/

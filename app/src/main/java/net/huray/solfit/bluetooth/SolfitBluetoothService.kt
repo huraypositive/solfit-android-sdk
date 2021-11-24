@@ -29,7 +29,7 @@ import net.huray.solfit.bluetooth.data.enums.ScanState
 import net.huray.solfit.bluetooth.data.enums.WeightState
 import java.lang.Exception
 
-class SolfitBluetoothService : Service() {
+open class SolfitBluetoothService : Service() {
     private val TAG = this::class.java.simpleName
     private lateinit var context: Context
     private val binder = ServiceBinder()
@@ -324,9 +324,9 @@ class SolfitBluetoothService : Service() {
         userInfo.height, algorithmInfo.adc
     )
 
-    fun getBodyFatRate() = getBodyFatData().bfr.toFloat()
+    private fun getBodyFatRate() = getBodyFatData().bfr.toFloat()
 
-    fun getMoreFatData() = AicareBleConfig.getMoreFatData(
+    private fun getMoreFatData() = AicareBleConfig.getMoreFatData(
         userInfo.sex,
         userInfo.height,
         mWeight!!,
@@ -335,7 +335,7 @@ class SolfitBluetoothService : Service() {
         getBodyFatData().pp
     )
 
-    fun onGetWeightData(weightData: WeightData?) {
+    private fun onGetWeightData(weightData: WeightData?) {
         mWeight = (weightData?.weight?.div(10f))
         bluetoothDataCallbacks?.onGetWeight(WeightState.SUCCESS, mWeight)
     }
@@ -370,7 +370,7 @@ class SolfitBluetoothService : Service() {
             .check()
     }
 
-    protected fun showBLEDialog() {
+    private fun showBLEDialog() {
         val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         enableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(enableIntent)
