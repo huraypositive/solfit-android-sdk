@@ -21,7 +21,6 @@ import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
 import net.huray.solfit.bluetooth.data.enums.ConnectState
 import net.huray.solfit.bluetooth.data.enums.ScanState
 import net.huray.solfit.bluetooth.data.enums.WeightState
-import net.huray.solfit.bluetooth.util.*
 
 
 class UserActivity : AppCompatActivity() {
@@ -84,6 +83,7 @@ class UserActivity : AppCompatActivity() {
                                     findViewById<TextView>(R.id.textV_weight).text =
                                         weightData.toString()
                                 }
+                                WeightState.UNKNOWN -> {}
                             }
                         }
 
@@ -107,6 +107,7 @@ class UserActivity : AppCompatActivity() {
                                     textVBodyFat.text = fatRate.toString()
                                     textVMusclemass.text = muscleMass.toString()
                                 }
+                                BodyCompositionState.UNKNOWN -> {}
                             }
                         }
                     }
