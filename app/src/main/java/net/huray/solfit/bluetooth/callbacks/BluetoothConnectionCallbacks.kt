@@ -1,5 +1,7 @@
 package net.huray.solfit.bluetooth.callbacks
 
+import net.huray.solfit.bluetooth.data.enums.ConnectState
+
 interface BluetoothConnectionCallbacks {
     // STATE: STATE_DISCONNECTED = 0
     //        STATE_CONNECTED = 1
@@ -8,5 +10,5 @@ interface BluetoothConnectionCallbacks {
     //        STATE_CONNECTING = 4
     //        STATE_TIME_OUT = 5
     //        STATE_ERROR = 6
-    fun onStateChanged(deviceAddress: String?, state: Int, errMsg: String?, errCode: Int?)
+    fun onStateChanged(deviceAddress: String?, state: ConnectState, errMsg: String?, errCode: Int?)
 }

@@ -17,6 +17,10 @@ import androidx.appcompat.app.AppCompatActivity
 import net.huray.solfit.bluetooth.callbacks.BluetoothConnectionCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothDataCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothScanCallbacks
+import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
+import net.huray.solfit.bluetooth.data.enums.ConnectState
+import net.huray.solfit.bluetooth.data.enums.ScanState
+import net.huray.solfit.bluetooth.data.enums.WeightState
 import net.huray.solfit.bluetooth.util.*
 
 
@@ -32,38 +36,37 @@ class UserActivity : AppCompatActivity() {
                 setUserInfo(1, 33, 175)
                 initilize(
                     bluetoothScanCallbacks = object : BluetoothScanCallbacks {
-                        override fun onScan(state: Int, errorMsg: String?, deviceList: List<BroadData>?) {
+                        override fun onScan(state: ScanState, errorMsg: String?, deviceList: List<BroadData>?) {
                             val textVScanResult = findViewById<TextView>(R.id.textV_scan_result)
                             when (state) {
-                                STATE_FAIL -> textVScanResult.text = errorMsg
-                                STATE_SCANNING -> {
+                                ScanState.FAIL -> textVScanResult.text = errorMsg
+                                ScanState.SCANNING -> {
                                     var deviceListString = ""
                                     for(index in deviceList!!){
                                         deviceListString += index.address.toString() + "\n"
                                     }
                                     textVScanResult.text = deviceListString
                                 }
-
-                                STATE_STOPPED -> {}
+                                ScanState.STOPPED -> {}
                             }
                         }
                     },
                     bluetoothConnectionCallbacks = object : BluetoothConnectionCallbacks {
                         override fun onStateChanged(
                             deviceAddress: String?,
-                            state: Int,
+                            state: ConnectState,
                             errMsg: String?,
                             errCode: Int?
                         ) {
                             findViewById<TextView>(R.id.textV_get_connect_state_chagne).apply {
                                 text = when (state) {
-                                    STATE_DISCONNECTED -> "DISCONNECTED"
-                                    STATE_CONNECTED -> "CONNECTED"
-                                    STATE_INDICATION_SUCCESS -> "INDICATION_SUCCESS"
-                                    STATE_SERVICE_DISCOVERED -> "SERVICE_DISCOVERED"
-                                    STATE_CONNECTING -> "CONNECTING"
-                                    STATE_TIME_OUT -> "TIMEOUT"
-                                    STATE_ERROR -> "ERROR"
+                                    ConnectState.DISCONNECTED -> "DISCONNECTED"
+                                    ConnectState.CONNECTED -> "CONNECTED"
+                                    ConnectState.INDICATION_SUCCESS -> "INDICATION_SUCCESS"
+                                    ConnectState.SERVICE_DISCOVERED -> "SERVICE_DISCOVERED"
+                                    ConnectState.CONNECTING -> "CONNECTING"
+                                    ConnectState.TIME_OUT -> "TIMEOUT"
+                                    ConnectState.ERROR -> "ERROR"
                                     else -> "Exception"
                                 }
                             }
@@ -71,13 +74,13 @@ class UserActivity : AppCompatActivity() {
 
                     },
                     bluetoothDataCallbacks = object : BluetoothDataCallbacks {
-                        override fun onGetWeight(state: Int, weightData: Double?) {
+                        override fun onGetWeight(state: WeightState, weightData: Double?) {
                             when (state) {
-                                STATE_GET_WEIGHT_START -> {
+                                WeightState.START -> {
                                 }
-                                STATE_GET_WEIGHT_WAITING -> {
+                                WeightState.WAITING -> {
                                 }
-                                STATE_GET_WEIGHT_SUCCESS -> {
+                                WeightState.SUCCESS -> {
                                     findViewById<TextView>(R.id.textV_weight).text =
                                         weightData.toString()
                                 }
@@ -85,22 +88,22 @@ class UserActivity : AppCompatActivity() {
                         }
 
                         override fun onGetBodyComposition(
-                            state: Int,
+                            state: BodyCompositionState,
                             fatRate: Float?,
                             muscleMass: Float?
                         ) {
                             val textVBodyFat = findViewById<TextView>(R.id.textV_body_fat)
                             val textVMusclemass = findViewById<TextView>(R.id.textV_muscle)
                             when (state) {
-                                STATE_GET_BODY_COMPOSITION_START -> {
+                                BodyCompositionState.START -> {
                                     textVBodyFat.text = "측정중"
                                     textVMusclemass.text = "측정중"
                                 }
-                                STATE_GET_BODY_COMPOSITION_FAIL -> {
+                                BodyCompositionState.FAIL -> {
                                     textVBodyFat.text = "계산 실패"
                                     textVMusclemass.text = "계산 실패"
                                 }
-                                STATE_GET_BODY_COMPOSITION_SUCCESS -> {
+                                BodyCompositionState.SUCCESS -> {
                                     textVBodyFat.text = fatRate.toString()
                                     textVMusclemass.text = muscleMass.toString()
                                 }
