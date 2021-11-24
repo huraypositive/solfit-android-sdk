@@ -16,6 +16,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import cn.net.aicare.MoreFatData
 import cn.net.aicare.algorithmutil.BodyFatData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import net.huray.solfit.bluetooth.callbacks.BluetoothConnectionCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothDataCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothScanCallbacks
@@ -35,7 +39,6 @@ class UserActivity : AppCompatActivity() {
             isServiceConnected = true
             val serviceBinder = service as SolfitBluetoothService.ServiceBinder
             solfitBluetoothService = serviceBinder.getService().apply {
-                setUserInfo(UserInfo(1,33,175))
                 initilize(
                     this@UserActivity,
                     bluetoothScanCallbacks = object : BluetoothScanCallbacks {
@@ -116,6 +119,7 @@ class UserActivity : AppCompatActivity() {
                         }
                     }
                 )
+                setUserInfo(UserInfo(1,33,175))
             }
         }
 
@@ -160,6 +164,15 @@ class UserActivity : AppCompatActivity() {
                 if (isServiceConnected) {
                     solfitBluetoothService?.disconnect()
                 }
+            }
+        }
+
+        findViewById<TextView>(R.id.button_get_previous_info).let{
+            it.setOnClickListener {
+                findViewById<TextView>(R.id.textV_previous_user_info).text =
+                "sex: "+ solfitBluetoothService?.getPreviousUserInfo()?.sex.toString()+"\n" +
+                        "age: "+ solfitBluetoothService?.getPreviousUserInfo()?.age.toString()+"\n" +
+                        "height: "+ solfitBluetoothService?.getPreviousUserInfo()?.height.toString()+"\n"
             }
         }
     }
