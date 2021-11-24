@@ -36,6 +36,7 @@ class UserActivity : AppCompatActivity() {
             solfitBluetoothService = serviceBinder.getService().apply {
                 setUserInfo(1, 33, 175)
                 initilize(
+                    this@UserActivity,
                     bluetoothScanCallbacks = object : BluetoothScanCallbacks {
                         override fun onScan(state: ScanState, errorMsg: String?, deviceList: List<BroadData>?) {
                             val textVScanResult = findViewById<TextView>(R.id.textV_scan_result)

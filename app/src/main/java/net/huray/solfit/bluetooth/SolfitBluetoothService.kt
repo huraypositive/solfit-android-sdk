@@ -7,6 +7,7 @@ import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.*
 import aicare.net.cn.iweightlibrary.utils.ParseData
 import aicare.net.cn.iweightlibrary.wby.WBYService
 import aicare.net.cn.iweightlibrary.wby.WBYService.*
+import android.Manifest
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothAdapter.*
@@ -18,6 +19,8 @@ import android.os.IBinder
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission
 import net.huray.solfit.bluetooth.callbacks.*
 import net.huray.solfit.bluetooth.data.UserInfo
 import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
@@ -28,6 +31,7 @@ import java.lang.Exception
 
 class SolfitBluetoothService : Service() {
     private val TAG = this::class.java.simpleName
+    private lateinit var context: Context
     private val binder = ServiceBinder()
     private var mService: WBYBinder? = null
     private var mIsScanning = false
@@ -145,10 +149,12 @@ class SolfitBluetoothService : Service() {
     }
 
     fun initilize(
+        context: Context,
         bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
         bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null,
         bluetoothDataCallbacks: BluetoothDataCallbacks? = null,
     ) {
+        this.context = context
         this.bluetoothScanCallbacks = bluetoothScanCallbacks
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
@@ -245,6 +251,8 @@ class SolfitBluetoothService : Service() {
         return intentFilter
     }
 
+    private fun isBlEAvailable() = adapter != null
+
     fun isBLEEnabled(): Boolean {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val adapter = bluetoothManager.adapter
@@ -255,20 +263,34 @@ class SolfitBluetoothService : Service() {
         if (!AiFitSDK.getInstance().isInitOk) {
             Log.e("AiFitSDK", "请先调用AiFitSDK.getInstance().init()")
             throw SecurityException("请先调用AiFitSDK.getInstance().init().(Please call AiFitSDK.getInstance().init() first.)")
-        } else {
-            if (isBLEEnabled()) {
-                if (!mIsScanning) {
-                    adapter!!.startLeScan(mLEScanCallback)
-                    mIsScanning = true
-                    handler.postDelayed(stopScanRunnable, 60000L)
-                }
-            } else {
-                bluetoothScanCallbacks?.onScan(
-                    ScanState.FAIL,
-                    resources.getString(R.string.error_bluetooth_not_enabled), null
-                )
-                showBLEDialog()
-            }
+        }
+
+        if(!isBlEAvailable()) {
+            bluetoothScanCallbacks?.onScan(
+                ScanState.FAIL,
+                resources.getString(R.string.error_feature_not_supported), null
+            )
+            return
+        }
+
+        if(!isBLEEnabled()) {
+            bluetoothScanCallbacks?.onScan(
+                ScanState.FAIL,
+                resources.getString(R.string.error_bluetooth_not_enabled), null
+            )
+            showBLEDialog()
+            return
+        }
+
+        if(!hasPermissions()) {
+            requestPermissions()
+            return
+        }
+
+        if (!mIsScanning) {
+            adapter!!.startLeScan(mLEScanCallback)
+            mIsScanning = true
+            handler.postDelayed(stopScanRunnable, 60000L)
         }
     }
 
@@ -316,6 +338,36 @@ class SolfitBluetoothService : Service() {
     fun onGetWeightData(weightData: WeightData?) {
         mWeight = (weightData?.weight?.div(10f))
         bluetoothDataCallbacks?.onGetWeight(WeightState.SUCCESS, mWeight)
+    }
+
+    private fun hasPermissions(): Boolean = TedPermission.isGranted(
+        context,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+
+    private fun requestPermissions() {
+        TedPermission.with(context)
+            .setPermissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            .setDeniedMessage(context.getString(R.string.error_denied_permission))
+            .setPermissionListener(object : PermissionListener {
+                override fun onPermissionGranted() {
+                    if (!mIsScanning) {
+                        adapter!!.startLeScan(mLEScanCallback)
+                        mIsScanning = true
+                        handler.postDelayed(stopScanRunnable, 60000L)
+                    }
+                }
+
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    bluetoothScanCallbacks?.onScan(ScanState.FAIL,context.getString(R.string.error_denied_permission),
+                                                    null)
+                }
+            })
+            .check()
     }
 
     protected fun showBLEDialog() {
