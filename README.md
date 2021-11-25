@@ -111,21 +111,40 @@
   > 블루투스 스캔 상태 변화 감지 관련 콜백
   ```kotlin
     /**
-     *  STATE : ScanState_FAIL(실패)
-     *          ScanState_SCANNING(성공)
-     *          ScanState_STOPPED(종료)
+     *  STATE : ScanState_FAIL
+     *          ScanState_SCANNING
+     *          ScanState_STOPPED
      */
     fun onScan(state: ScanState, errorMsg: String?, deviceList: List<BroadData>?)
   ```
 * BluetoothConnectionCallbacks
   > 블루투스 연결 상태 변화 감지 관련 콜백
   ```kotlin
+    /**
+     *  STATE: ConnectState_DISCONNECTED
+     *         ConnectState_CONNECTED
+     *         ConnectState_SERVICE_DISCOVERED
+     *         ConnectState_INDICATION_SUCCESS
+     *         ConnectState_CONNECTING
+     *         ConnectState_TIME_OUT
+     *         ConnectState_ERROR
+     */
     fun onStateChanged(deviceAddress: String?, state: ConnectState, errMsg: String?, errCode: Int?)
   ```
 * BluetoothDataCallbacks
   > 체중/체성분 상태 변화 감지 관련 콜백
   ```kotlin
+    /**
+     * STATE: WeightState_START
+     *        WeightState_WAITING
+     *        WeightState_SUCCESS
+     */
     fun onGetWeight(state: WeightState, weightData: Double?)
+    /**
+     * STATE: BodyCompositionState_START
+     *        BodyCompositionState_FAIL
+     *        BodyCompositionState_SUCCESS
+     */
     fun onGetBodyComposition(state: BodyCompositionState, bodyFatData: BodyFatData?, moreFatData: MoreFatData?)
   ```
 
