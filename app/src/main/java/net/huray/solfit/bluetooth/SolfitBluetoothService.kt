@@ -21,10 +21,6 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import net.huray.solfit.bluetooth.callbacks.*
 import net.huray.solfit.bluetooth.data.UserInfo
 import net.huray.solfit.bluetooth.data.enums.BodyCompositionState

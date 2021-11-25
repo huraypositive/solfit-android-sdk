@@ -26,6 +26,7 @@ import net.huray.solfit.bluetooth.data.enums.WeightState
 class UserActivity : AppCompatActivity() {
     private val TAG = javaClass.simpleName
     private var solfitBluetoothService: SolfitBluetoothService? = null
+    private var solfitDataManager : SolfitDataManager? = null
     private var isServiceConnected = false
     private var serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -112,7 +113,6 @@ class UserActivity : AppCompatActivity() {
                         }
                     }
                 )
-                setUserInfo(UserInfo(1,33,175))
             }
         }
 
@@ -128,7 +128,7 @@ class UserActivity : AppCompatActivity() {
         //Solfitbluetooth Setting
         AiFitSDK.getInstance().init(this)
         serviceBind()
-
+        solfitDataManager = SolfitDataManager(this)
 
         val buttonStartScan = findViewById<Button>(R.id.button_start_scan)
         buttonStartScan.setOnClickListener {
@@ -159,13 +159,14 @@ class UserActivity : AppCompatActivity() {
                 }
             }
         }
+        solfitDataManager!!.saveUserInfoData(UserInfo(1,2,3))
 
         findViewById<TextView>(R.id.button_get_previous_info).let{
             it.setOnClickListener {
                 findViewById<TextView>(R.id.textV_previous_user_info).text =
-                "sex: "+ solfitBluetoothService?.getPreviousUserInfo()?.sex.toString()+"\n" +
-                        "age: "+ solfitBluetoothService?.getPreviousUserInfo()?.age.toString()+"\n" +
-                        "height: "+ solfitBluetoothService?.getPreviousUserInfo()?.height.toString()+"\n"
+                "sex: "+ solfitDataManager?.readUserInfoData()?.sex.toString()+"\n" +
+                        "age: "+ solfitDataManager?.readUserInfoData()?.age.toString()+"\n" +
+                        "height: "+ solfitDataManager?.readUserInfoData()?.height.toString()+"\n"
             }
         }
     }
