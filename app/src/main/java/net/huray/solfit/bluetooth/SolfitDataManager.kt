@@ -55,29 +55,29 @@ class SolfitDataManager(private val context: Context) {
                                 userInfoSharedPreferences.getInt("height",1))
 
     fun saveDeviceInfo(deviceInfo: BroadData){
-        //TODO: GSON 활용해서 객체 정보 저장
-        //중복 체크 로직
-
         val gson = GsonBuilder().create()
-
         val jsonDeviceInfo = gson.toJson(deviceInfo,BroadData::class.java)
 
         deviceInfoSharedPreferences.edit().apply(){
-            putString("1",jsonDeviceInfo)
+            putString(deviceInfo.address,jsonDeviceInfo)
         }.apply()
     }
 
     fun readDeviceInfo(): List<BroadData> {
         val iterator = deviceInfoSharedPreferences.all.values.iterator()
         val gson = GsonBuilder().create()
-        var deviceInfoList = ArrayList<BroadData>()
+        val deviceInfoList = ArrayList<BroadData>()
         while(iterator.hasNext()){
             deviceInfoList.add(gson.fromJson(iterator.next() as String, BroadData::class.java))
         }
         return deviceInfoList
     }
 
-    fun updateDeviceInfo(broadData: BroadData){}
+    fun deleteDeviceInfo(deviceAddress: String){
+        deviceInfoSharedPreferences.edit().remove(deviceAddress).apply()
+    }
 
-    fun deleteDeviceInfo(broadData: BroadData){}
+    fun cleanDeviceInfo(){
+        deviceInfoSharedPreferences.edit().clear().apply()
+    }
 }

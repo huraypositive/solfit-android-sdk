@@ -177,6 +177,12 @@ class UserActivity : AppCompatActivity() {
                     SolfitDataManager.getInstance(this@UserActivity).readDeviceInfo().toString() + "\n"
             }
         }
+
+        findViewById<Button>(R.id.button_get_device_info_list_clear).let{
+            it.setOnClickListener {
+                SolfitDataManager.getInstance(this@UserActivity).cleanDeviceInfo()
+            }
+        }
     }
 
     fun serviceBind() {
