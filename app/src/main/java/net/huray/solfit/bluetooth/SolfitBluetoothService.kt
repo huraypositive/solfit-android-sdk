@@ -340,7 +340,9 @@ open class SolfitBluetoothService : Service() {
     }
 
     private suspend fun getUserInfo() {
-        previousUserInfo = UserInfo(userInfoDataStore.sex.first(),userInfoDataStore.age.first(),userInfoDataStore.height.first())
+        previousUserInfo = UserInfo(userInfoDataStore.sex.first()
+                                    ,userInfoDataStore.age.first()
+                                    ,userInfoDataStore.height.first())
     }
 
     fun getPreviousUserInfo()= previousUserInfo
@@ -392,8 +394,9 @@ open class SolfitBluetoothService : Service() {
                 }
 
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    bluetoothScanCallbacks?.onScan(ScanState.FAIL,context.getString(R.string.error_denied_permission),
-                                                    null)
+                    bluetoothScanCallbacks?.onScan(
+                        ScanState.FAIL,context.getString(R.string.error_denied_permission),null
+                    )
                 }
             })
             .check()
