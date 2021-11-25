@@ -106,51 +106,53 @@ open class SolfitBluetoothService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val did: Int
             val action = intent?.action
-            if (ACTION_STATE_CHANGED == action) {
-                did = intent.getIntExtra(EXTRA_STATE, -1)
-                bluetoothStateChanged(did)
-            } else {
-                val result: String?
-                if (ACTION_CONNECT_STATE_CHANGED == action) {
+            val result: String?
+            val cmd: String?
+            when(action) {
+                ACTION_STATE_CHANGED -> {
+                    did = intent.getIntExtra(EXTRA_STATE, -1)
+                    bluetoothStateChanged(did)
+                }
+                ACTION_CONNECT_STATE_CHANGED -> {
                     did = intent.getIntExtra(EXTRA_CONNECT_STATE, -1)
                     result = intent.getStringExtra(EXTRA_DEVICE_ADDRESS)
                     bluetoothConnectionCallbacks?.onStateChanged(result, ConnectState.getConnectState(did), null, null)
                 }
-                else {
-                    val cmd: String?
-                    if (ACTION_CONNECT_ERROR == action) {
-                        cmd = intent.getStringExtra(EXTRA_ERROR_MSG)
-                        val errCode =
-                            intent.getIntExtra(EXTRA_ERROR_CODE, -1)
-                        bluetoothConnectionCallbacks?.onStateChanged(
-                            null,
-                            ConnectState.ERROR,
-                            cmd,
-                            errCode
-                        )
-                    } else if (ACTION_WEIGHT_DATA == action) {
-                        val weightData =
-                            intent.getSerializableExtra(EXTRA_WEIGHT_DATA) as WeightData
-                        onGetWeightData(weightData)
-                    } else if (ACTION_SETTING_STATUS_CHANGED == action) {
-                        did = intent.getIntExtra(EXTRA_SETTING_STATUS, -1)
-                        when (did) {
-                            NORMAL, LOW_POWER
-                            -> bluetoothDataCallbacks?.onGetWeight(WeightState.getWeightState(did),
-                                                                    null)
-                            ADC_MEASURED_ING, ADC_ERROR
-                            -> bluetoothDataCallbacks?.onGetBodyComposition(BodyCompositionState.getBodyCompositionState(did),
-                                                                     null, null)
-                        }
-                    } else if (ACTION_ALGORITHM_INFO == action) {
-                            algorithmInfo =
-                                intent.getSerializableExtra(EXTRA_ALGORITHM_INFO) as AlgorithmInfo
-                            bluetoothDataCallbacks?.onGetBodyComposition(
-                                BodyCompositionState.SUCCESS,
-                                getBodyFatData(),
-                                getMoreFatData()
-                            )
+                ACTION_CONNECT_ERROR -> {
+                    cmd = intent.getStringExtra(EXTRA_ERROR_MSG)
+                    val errCode =
+                        intent.getIntExtra(EXTRA_ERROR_CODE, -1)
+                    bluetoothConnectionCallbacks?.onStateChanged(
+                        null,
+                        ConnectState.ERROR,
+                        cmd,
+                        errCode
+                    )
+                }
+                ACTION_WEIGHT_DATA -> {
+                    val weightData =
+                        intent.getSerializableExtra(EXTRA_WEIGHT_DATA) as WeightData
+                    onGetWeightData(weightData)
+                }
+                ACTION_SETTING_STATUS_CHANGED -> {
+                    did = intent.getIntExtra(EXTRA_SETTING_STATUS, -1)
+                    when (did) {
+                        NORMAL, LOW_POWER
+                        -> bluetoothDataCallbacks?.onGetWeight(WeightState.getWeightState(did),
+                            null)
+                        ADC_MEASURED_ING, ADC_ERROR
+                        -> bluetoothDataCallbacks?.onGetBodyComposition(BodyCompositionState.getBodyCompositionState(did),
+                            null, null)
                     }
+                }
+                ACTION_ALGORITHM_INFO -> {
+                    algorithmInfo =
+                        intent.getSerializableExtra(EXTRA_ALGORITHM_INFO) as AlgorithmInfo
+                    bluetoothDataCallbacks?.onGetBodyComposition(
+                        BodyCompositionState.SUCCESS,
+                        getBodyFatData(),
+                        getMoreFatData()
+                    )
                 }
             }
         }
