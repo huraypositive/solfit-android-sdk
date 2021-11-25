@@ -2,9 +2,6 @@ package net.huray.solfit.bluetooth
 
 import aicare.net.cn.iweightlibrary.AiFitSDK
 import aicare.net.cn.iweightlibrary.entity.*
-import aicare.net.cn.iweightlibrary.utils.AicareBleConfig
-import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.LOW_POWER
-import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.NORMAL
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -16,10 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import cn.net.aicare.MoreFatData
 import cn.net.aicare.algorithmutil.BodyFatData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import net.huray.solfit.bluetooth.callbacks.BluetoothConnectionCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothDataCallbacks
 import net.huray.solfit.bluetooth.callbacks.BluetoothScanCallbacks
@@ -39,7 +32,7 @@ class UserActivity : AppCompatActivity() {
             isServiceConnected = true
             val serviceBinder = service as SolfitBluetoothService.ServiceBinder
             solfitBluetoothService = serviceBinder.getService().apply {
-                initilize(
+                initialize(
                     this@UserActivity,
                     bluetoothScanCallbacks = object : BluetoothScanCallbacks {
                         override fun onScan(state: ScanState, errorMsg: String?, deviceList: List<BroadData>?) {

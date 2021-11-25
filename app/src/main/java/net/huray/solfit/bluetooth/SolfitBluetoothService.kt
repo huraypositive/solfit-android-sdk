@@ -26,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.huray.solfit.bluetooth.callbacks.*
-import net.huray.solfit.bluetooth.data.datastore.UserInfoDataStore
 import net.huray.solfit.bluetooth.data.UserInfo
 import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
 import net.huray.solfit.bluetooth.data.enums.ConnectState
@@ -45,7 +44,6 @@ open class SolfitBluetoothService : Service() {
     private lateinit var userInfo: UserInfo
     private var previousUserInfo: UserInfo? = null
 
-    private lateinit var userInfoDataStore: UserInfoDataStore
     private lateinit var algorithmInfo: AlgorithmInfo
     private var mWeight: Double? = 0.0
     private val mDeviceList = ArrayList<BroadData>()
@@ -158,7 +156,7 @@ open class SolfitBluetoothService : Service() {
         }
     }
 
-    fun initilize(
+    fun initialize(
         context: Context,
         bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
         bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null,
@@ -168,7 +166,6 @@ open class SolfitBluetoothService : Service() {
         this.bluetoothScanCallbacks = bluetoothScanCallbacks
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
-        userInfoDataStore = UserInfoDataStore(context)
     }
 
     private fun onInitialize() {
@@ -325,24 +322,6 @@ open class SolfitBluetoothService : Service() {
 
     fun setUserInfo(userInfo: UserInfo) {
         this.userInfo = userInfo
-        CoroutineScope(Dispatchers.IO).launch {
-            saveUserInfo()
-            getUserInfo()
-        }
-    }
-
-    private suspend fun saveUserInfo() {
-        userInfoDataStore.apply {
-            setSex(userInfo.sex)
-            setAge(userInfo.age)
-            setheight(userInfo.height)
-        }
-    }
-
-    private suspend fun getUserInfo() {
-        previousUserInfo = UserInfo(userInfoDataStore.sex.first()
-                                    ,userInfoDataStore.age.first()
-                                    ,userInfoDataStore.height.first())
     }
 
     fun getPreviousUserInfo()= previousUserInfo
