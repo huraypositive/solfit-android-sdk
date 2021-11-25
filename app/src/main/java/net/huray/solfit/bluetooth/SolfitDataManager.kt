@@ -1,12 +1,25 @@
 package net.huray.solfit.bluetooth
 
 import aicare.net.cn.iweightlibrary.entity.BroadData
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import net.huray.solfit.bluetooth.data.UserInfo
 
 class SolfitDataManager(private val context: Context) {
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        @Volatile private var instance: SolfitDataManager? = null
+
+        @JvmStatic fun getInstance(context: Context): SolfitDataManager =
+            instance ?: synchronized(this) {
+                instance ?: SolfitDataManager(context).also {
+                    instance = it
+                }
+            }
+    }
 
     private val masterKey by lazy {
         MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)

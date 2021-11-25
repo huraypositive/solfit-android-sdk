@@ -128,7 +128,7 @@ class UserActivity : AppCompatActivity() {
         //Solfitbluetooth Setting
         AiFitSDK.getInstance().init(this)
         serviceBind()
-        solfitDataManager = SolfitDataManager(this)
+        solfitDataManager = SolfitDataManager.getInstance(this)
 
         val buttonStartScan = findViewById<Button>(R.id.button_start_scan)
         buttonStartScan.setOnClickListener {
