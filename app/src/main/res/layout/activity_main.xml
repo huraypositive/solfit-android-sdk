@@ -110,4 +110,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_get_previous_info"/>
+    <Button
+        android:id="@+id/button_get_device_info_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GET DEVICE INFO LIST"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textV_previous_user_info"/>
+    <TextView
+        android:id="@+id/textV_get_device_info_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GET DEVICE INFO LIST"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_get_device_info_list"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

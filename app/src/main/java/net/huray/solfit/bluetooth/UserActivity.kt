@@ -44,6 +44,7 @@ class UserActivity : AppCompatActivity() {
                                     var deviceListString = ""
                                     for(index in deviceList!!){
                                         deviceListString += index.address.toString() + "\n"
+                                        SolfitDataManager.getInstance(this@UserActivity).saveDeviceInfo(index)
                                     }
                                     textVScanResult.text = deviceListString
                                 }
@@ -167,6 +168,13 @@ class UserActivity : AppCompatActivity() {
                 "sex: "+ solfitDataManager?.readUserInfoData()?.sex.toString()+"\n" +
                         "age: "+ solfitDataManager?.readUserInfoData()?.age.toString()+"\n" +
                         "height: "+ solfitDataManager?.readUserInfoData()?.height.toString()+"\n"
+            }
+        }
+
+        findViewById<Button>(R.id.button_get_device_info_list).let{
+            it.setOnClickListener {
+                findViewById<TextView>(R.id.textV_get_device_info_list).text =
+                    SolfitDataManager.getInstance(this@UserActivity).readDeviceInfo().toString() + "\n"
             }
         }
     }

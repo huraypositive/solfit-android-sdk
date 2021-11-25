@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import net.huray.solfit.bluetooth.data.UserInfo
 
 class SolfitDataManager(private val context: Context) {
@@ -55,9 +57,25 @@ class SolfitDataManager(private val context: Context) {
     fun saveDeviceInfo(deviceInfo: BroadData){
         //TODO: GSON 활용해서 객체 정보 저장
         //중복 체크 로직
+
+        val gson = GsonBuilder().create()
+
+        val jsonDeviceInfo = gson.toJson(deviceInfo,BroadData::class.java)
+
+        deviceInfoSharedPreferences.edit().apply(){
+            putString("1",jsonDeviceInfo)
+        }.apply()
     }
 
-    fun readDeviceInfo(): List<BroadData>? = null
+    fun readDeviceInfo(): List<BroadData> {
+        val iterator = deviceInfoSharedPreferences.all.values.iterator()
+        val gson = GsonBuilder().create()
+        var deviceInfoList = ArrayList<BroadData>()
+        while(iterator.hasNext()){
+            deviceInfoList.add(gson.fromJson(iterator.next() as String, BroadData::class.java))
+        }
+        return deviceInfoList
+    }
 
     fun updateDeviceInfo(broadData: BroadData){}
 
