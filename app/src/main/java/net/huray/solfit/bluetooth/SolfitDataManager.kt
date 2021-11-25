@@ -73,6 +73,10 @@ class SolfitDataManager(private val context: Context) {
         return deviceInfoList
     }
 
+    fun updateDeviceInfo(deviceInfo: BroadData){
+        saveDeviceInfo(deviceInfo)
+    }
+
     fun deleteDeviceInfo(deviceAddress: String){
         deviceInfoSharedPreferences.edit().remove(deviceAddress).apply()
     }
