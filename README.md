@@ -17,16 +17,17 @@ build.gradle(Project)
              maven { url 'https://jitpack.io' }  
          }  
      }  
+```
  * Step 2. Add the dependency  
+```groovy
  build.gradle(app)  
      dependencies {  
          implementation 'com.github.hurayPositive:solfit-android-sdk:$latestVersion'  
      }
 ```
- 
 # Required Dependencies
 
-* [TedPermission][tedpermission]
+* [TedPermission]
   ```groovy
   implementation "gun0912.ted:tedpermission:$latestVersion"
   ```
@@ -48,6 +49,17 @@ build.gradle(Project)
 
 * 서비스 시작(추후 업데이트 예정)
   * 
+  
+* 데이터 활용
+  * 마지막 접속 유저 정보 가져오기
+~~~kotlin
+  SolfitDataManger().getInstance(context).readUserInfoData()
+~~~
+  * 블루투스 연결 했던 기기 목록 가져오기
+~~~kotlin
+  SolfitDataManger().getInstance(context).readDeviceInfoList()
+~~~
+  * 기타 Function들도 위와 같은 방식으로 사용하면됩니다
 
 # Core Classes
   * SolfitBluetoothService
@@ -170,5 +182,4 @@ build.gradle(Project)
   * Step 4. 로그 확인을 통해 정상적으로 Publish 되었는지 확인
     
 [releases]: https://github.com/huraypositive/solfit-android-sdk/releases
-[sample]:
 [TedPermission]: https://github.com/ParkSangGwon/TedPermission
