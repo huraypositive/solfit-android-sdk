@@ -1,6 +1,7 @@
 package net.huray.solfit.bluetooth
 
 import aicare.net.cn.iweightlibrary.AiFitSDK
+import aicare.net.cn.iweightlibrary.bleprofile.BleProfileService
 import aicare.net.cn.iweightlibrary.entity.*
 import aicare.net.cn.iweightlibrary.utils.AicareBleConfig
 import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.*
@@ -35,6 +36,7 @@ open class SolfitBluetoothService : Service() {
     private val binder = ServiceBinder()
     private var mService: WBYBinder? = null
     private var mIsScanning = false
+    private var mIsConnected = false
     private var adapter: BluetoothAdapter? = null
 
     private lateinit var userInfo: UserInfo
@@ -60,15 +62,6 @@ open class SolfitBluetoothService : Service() {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             val binder = service as WBYService.WBYBinder
             mService = binder.service.WBYBinder()
-            val bleService: WBYBinder = mService as WBYBinder
-
-            if (bleService.isConnected) {
-                bluetoothConnectionCallbacks?.onStateChanged(
-                    bleService.deviceAddress,
-                    ConnectState.CONNECTED,
-                    null, null
-                )
-            }
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
@@ -110,6 +103,18 @@ open class SolfitBluetoothService : Service() {
                 ACTION_CONNECT_STATE_CHANGED -> {
                     did = intent.getIntExtra(EXTRA_CONNECT_STATE, -1)
                     result = intent.getStringExtra(EXTRA_DEVICE_ADDRESS)
+                    when(ConnectState.getConnectState(did)){
+                        ConnectState.CONNECTED, ConnectState.INDICATION_SUCCESS -> {
+                            mIsConnected = true
+                            SolfitDataManager.getInstance(context!!).saveDeviceInfo(BroadData().apply {
+                                address = result
+                            })
+                        }
+                        ConnectState.ERROR,ConnectState.TIME_OUT,ConnectState.DISCONNECTED, ConnectState.UNKNOWN
+                            -> mIsConnected = false
+                        ConnectState.SERVICE_DISCOVERED -> {}
+                        ConnectState.CONNECTING -> {}
+                    }
                     bluetoothConnectionCallbacks?.onStateChanged(result, ConnectState.getConnectState(did), null, null)
                 }
                 ACTION_CONNECT_ERROR -> {
@@ -179,18 +184,13 @@ open class SolfitBluetoothService : Service() {
         return binder
     }
 
-    override fun onUnbind(intent: Intent?): Boolean {
-        unbindService()
-        return super.onUnbind(intent)
-    }
-
     private fun bindService(address: String?) {
         val service = Intent(this, WBYService::class.java)
         if (!TextUtils.isEmpty(address)) {
             service.putExtra(EXTRA_DEVICE_ADDRESS, address)
             startService(service)
+            bindService(service, mServiceConnection, Context.BIND_AUTO_CREATE)
         }
-        bindService(service, mServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun unbindService() {
@@ -203,14 +203,19 @@ open class SolfitBluetoothService : Service() {
     }
 
     fun startConnect(address: String?) {
-        bindService(address)
+        if(!mIsConnected) {
+            bindService(address)
+        }
     }
 
     fun disconnect() {
         if (mIsScanning) {
             stopScan()
         }
-        mService?.disconnect()
+        if(mIsConnected){
+            mService?.disconnect()
+            unbindService()
+        }
     }
 
     override fun onDestroy() {

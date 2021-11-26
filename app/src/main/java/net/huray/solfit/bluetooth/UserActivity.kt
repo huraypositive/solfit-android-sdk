@@ -44,7 +44,6 @@ class UserActivity : AppCompatActivity() {
                                     var deviceListString = ""
                                     for(index in deviceList!!){
                                         deviceListString += index.address.toString() + "\n"
-                                        SolfitDataManager.getInstance(this@UserActivity).saveDeviceInfo(index)
                                     }
                                     textVScanResult.text = deviceListString
                                 }
@@ -174,7 +173,7 @@ class UserActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button_get_device_info_list).let{
             it.setOnClickListener {
                 findViewById<TextView>(R.id.textV_get_device_info_list).text =
-                    SolfitDataManager.getInstance(this@UserActivity).readDeviceInfo().toString() + "\n"
+                    SolfitDataManager.getInstance(this@UserActivity).readDeviceInfoList().toString() + "\n"
             }
         }
 
@@ -197,8 +196,12 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
+    fun disconnect() {
         serviceUnbind()
+    }
+
+    override fun onDestroy() {
+        disconnect()
         super.onDestroy()
     }
 }

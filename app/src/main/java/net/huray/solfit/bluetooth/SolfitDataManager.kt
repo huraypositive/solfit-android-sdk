@@ -35,7 +35,7 @@ class SolfitDataManager(private val context: Context) {
                ,EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
     }
 
-    val deviceInfoSharedPreferences by lazy {
+    private val deviceInfoSharedPreferences by lazy {
         EncryptedSharedPreferences.create(context, "device_info"
             ,masterKey,EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV
             ,EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
@@ -63,7 +63,7 @@ class SolfitDataManager(private val context: Context) {
         }.apply()
     }
 
-    fun readDeviceInfo(): List<BroadData> {
+    fun readDeviceInfoList(): List<BroadData> {
         val iterator = deviceInfoSharedPreferences.all.values.iterator()
         val gson = GsonBuilder().create()
         val deviceInfoList = ArrayList<BroadData>()
