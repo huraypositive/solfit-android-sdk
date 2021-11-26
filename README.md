@@ -8,8 +8,9 @@
  * Supported cpu architecture: arm64-v8a; armeabi-v7a; x86; x86_64
 
 # installation
- * Step 1. Add the JitPack repository to your build file  
- build.gradle(Project)  
+ * Step 1. Add the JitPack repository to your build file
+```groovy
+build.gradle(Project)  
      allprojects {  
          repositories {  
              ....  
@@ -21,7 +22,8 @@
      dependencies {  
          implementation 'com.github.hurayPositive:solfit-android-sdk:$latestVersion'  
      }
-     
+```
+ 
 # Required Dependencies
 
 * [TedPermission][tedpermission]
@@ -90,7 +92,7 @@
 * ConnectState
   > 블루투스 기기 연결 상태 유형
   * DISCONNECTED: 
-  * CONNECTED:
+  * CONNECTED
   * SERVICE_DISCOVERED
   * INDICATION_SUCCESS
   * CONNECTING
@@ -150,11 +152,17 @@
 
 # Functions
 * SolfitBluetoothService
-    * startScan(): 기기의 블루투스 스캔을 시작한다
-    * stopScan(): 기기의 블루투스 스캔을 멈춘다
-    * connect(address: String?): 전달받은 Mac Address에 해당하는 기기에 연결을 요청한다
-    * disconnect(): 연결된 기기에 연결 해제를 요청한다
+  * startScan():Void 기기의 블루투스 스캔을 시작한다
+  * stopScan():Void 기기의 블루투스 스캔을 멈춘다
+  * startConnect(address: String?):Void 전달받은 Mac Address에 해당하는 기기에 연결을 요청한다
+  * disconnect():Void 연결된 기기에 연결 해제를 요청한다
     
+* SolfitDataManager
+  * readUserInfoData():UserInfo 마지막으로 접속했던 유저 정보를 가져옴
+  * readDeviceInfoList():List<BroadData> 블루투스 연결했던 기기들의 목록을 가져옴
+  * updateDeviceInfo(deviceInfo: BroadData): Void 블루투스 연결했던 기기들 중 특정 디바이스 정보를 업데이트함
+  * deleteDeviceInfo(deviceAddress: String): Void 블루투스 연결했던 기기들 중 특정 디바이스 정보를 삭제함
+  * clearDeviceInfo():Void 블루투스 연결했던 기기들의 목록을 전부 지움
 # Release
   * Step 1. GitHub에서 TAG 생성
   * Step 2. 생성한 TAG Release
