@@ -25,6 +25,18 @@ build.gradle(Project)
          implementation 'com.github.hurayPositive:solfit-android-sdk:$latestVersion'  
      }
 ```
+  * Step 3. Allow Project Repository
+```groovy
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }  <- Add this line
+        jcenter() // Warning: this repository is going to shut down soon
+    }
+}
+```
 # Required Dependencies
 
 * [TedPermission]
