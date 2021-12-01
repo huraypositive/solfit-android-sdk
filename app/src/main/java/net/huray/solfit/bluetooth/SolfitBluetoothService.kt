@@ -112,8 +112,7 @@ open class SolfitBluetoothService : Service() {
                         }
                         ConnectState.ERROR,ConnectState.TIME_OUT,ConnectState.DISCONNECTED, ConnectState.UNKNOWN
                             -> mIsConnected = false
-                        ConnectState.SERVICE_DISCOVERED -> {}
-                        ConnectState.CONNECTING -> {}
+                        else -> {}
                     }
                     bluetoothConnectionCallbacks?.onStateChanged(result, ConnectState.getConnectState(did), null, null)
                 }
@@ -249,14 +248,7 @@ open class SolfitBluetoothService : Service() {
         intentFilter.addAction(ACTION_CONNECT_ERROR)
         intentFilter.addAction(ACTION_WEIGHT_DATA)
         intentFilter.addAction(ACTION_SETTING_STATUS_CHANGED)
-        intentFilter.addAction(ACTION_RESULT_CHANGED)
-        intentFilter.addAction(ACTION_FAT_DATA)
-        intentFilter.addAction(ACTION_AUTH_DATA)
-        intentFilter.addAction(ACTION_DID)
-        intentFilter.addAction(ACTION_DECIMAL_INFO)
-        intentFilter.addAction(ACTION_CMD)
         intentFilter.addAction(ACTION_ALGORITHM_INFO)
-        intentFilter.addAction(ACTION_SET_MODE)
         return intentFilter
     }
 
@@ -321,12 +313,6 @@ open class SolfitBluetoothService : Service() {
         }
     }
 
-    fun setUserInfo(userInfo: UserInfo) {
-        this.userInfo = userInfo
-    }
-
-    fun getPreviousUserInfo()= previousUserInfo
-
     private fun getBodyFatData() = AicareBleConfig.getBodyFatData(
         algorithmInfo.algorithmId,
         userInfo.sex,
@@ -383,7 +369,7 @@ open class SolfitBluetoothService : Service() {
     }
 
     private fun showBLEDialog() {
-        val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        val enableIntent = Intent(ACTION_REQUEST_ENABLE)
         enableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(enableIntent)
     }

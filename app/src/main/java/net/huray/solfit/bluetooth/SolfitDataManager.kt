@@ -58,9 +58,7 @@ class SolfitDataManager(private val context: Context) {
         val gson = GsonBuilder().create()
         val jsonDeviceInfo = gson.toJson(deviceInfo,BroadData::class.java)
 
-        deviceInfoSharedPreferences.edit().apply(){
-            putString(deviceInfo.address,jsonDeviceInfo)
-        }.apply()
+        deviceInfoSharedPreferences.edit().putString(deviceInfo.address,jsonDeviceInfo).apply()
     }
 
     fun readDeviceInfoList(): List<BroadData> {
