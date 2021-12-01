@@ -48,7 +48,22 @@ build.gradle(Project)
   ```
 
 * 서비스 시작(추후 업데이트 예정)
-  * 
+  ~~~kotlin
+  private var serviceConnection = object : ServiceConnection {
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?){
+        val serviceBinder = service as SolfitBluetoothService.ServiceBinder
+        solfitBluetoothService = serviceBinder.getService().initialize(
+            context, bluetoothScanCallBacks, bluetoothConnectionCallbacks, bluetoothDataCallbacks
+        )
+    }
+    override fun onServiceDisconnected(name: ComponentName?){}
+  }
+  
+  fun serviceBind() {
+      val intent = Intent(this, SolfitBluetoothService::class.java)
+      bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+  }
+  ~~~
   
 * 데이터 활용
   * 마지막 접속 유저 정보 가져오기
@@ -60,6 +75,13 @@ build.gradle(Project)
   SolfitDataManger().getInstance(context).readDeviceInfoList()
 ~~~
   * 기타 Function들도 위와 같은 방식으로 사용하면됩니다
+~~~kotlin
+  SolfitDataManger().getInstance(context).readUserInfoData()
+  SolfitDataManger().getInstance(context).readDeviceInfoList()
+  SolfitDataManger().getInstance(context).updateDeviceInfo(deviceInfo)
+  SolfitDataManger().getInstance(context).deleteDeviceInfo(deviceAddress)
+  SolfitDataManger().getInstance(context).clearDeviceInfo()
+~~~
 
 # Core Classes
   * SolfitBluetoothService
@@ -95,6 +117,7 @@ build.gradle(Project)
   * muscleMass: (Double)
   * protein: (Double)
   * fatLevel: (MoreFatData.FatLevel(Enum))
+  
 # Type Classes
 * ScanState
   > 블루투스 스캔 연결 상태 유형
@@ -103,7 +126,7 @@ build.gradle(Project)
     * DISCONNECTED: 연결해제
 * ConnectState
   > 블루투스 기기 연결 상태 유형
-  * DISCONNECTED: 
+  * DISCONNECTED
   * CONNECTED
   * SERVICE_DISCOVERED
   * INDICATION_SUCCESS
@@ -120,6 +143,7 @@ build.gradle(Project)
   * START 
   * FAIL
   * SUCCESS
+  
 # Interfaces
 * BluetoothScanCallbacks
   > 블루투스 스캔 상태 변화 감지 관련 콜백
@@ -175,6 +199,7 @@ build.gradle(Project)
   * updateDeviceInfo(deviceInfo: BroadData): Void 블루투스 연결했던 기기들 중 특정 디바이스 정보를 업데이트함
   * deleteDeviceInfo(deviceAddress: String): Void 블루투스 연결했던 기기들 중 특정 디바이스 정보를 삭제함
   * clearDeviceInfo():Void 블루투스 연결했던 기기들의 목록을 전부 지움
+  
 # Release
   * Step 1. GitHub에서 TAG 생성
   * Step 2. 생성한 TAG Release
