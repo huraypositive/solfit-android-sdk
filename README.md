@@ -34,7 +34,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://jitpack.io" }  <- Add this line
+        maven { url "https://jitpack.io" }  // Add this line
         jcenter() // Warning: this repository is going to shut down soon
     }
 }
@@ -73,9 +73,9 @@ dependencyResolutionManagement {
   private var serviceConnection = object : ServiceConnection {
     override fun onServiceConnected(name: ComponentName?, service: IBinder?){
         val serviceBinder = service as SolfitBluetoothService.ServiceBinder
-        solfitBluetoothService = serviceBinder.getService().initialize(
-            context, bluetoothScanCallBacks, bluetoothConnectionCallbacks, bluetoothDataCallbacks
-        )
+        solfitBluetoothService = serviceBinder.getService().apply {
+        initialize(context, bluetoothScanCallBacks, bluetoothConnectionCallbacks, bluetoothDataCallbacks)
+        } 
     }
     override fun onServiceDisconnected(name: ComponentName?){}
   }
