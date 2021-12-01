@@ -163,6 +163,7 @@ open class SolfitBluetoothService : Service() {
         bluetoothDataCallbacks: BluetoothDataCallbacks? = null,
     ) {
         this.context = context
+        this.userInfo = userInfo
         this.bluetoothScanCallbacks = bluetoothScanCallbacks
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
