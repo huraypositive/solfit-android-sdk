@@ -43,7 +43,7 @@ dependencyResolutionManagement {
 -----------------------
 ~~~groovy
  dependencies {  
-     implementation 'com.github.elinkthings:BodyFatScaleSDKRepositoryAndroid:1.3.2'
+     implementation 'com.github.elinkthings:BodyFatScaleSDKRepositoryAndroid:$latestVersion'
  }
 ~~~  
 
@@ -65,7 +65,8 @@ dependencyResolutionManagement {
 # Usage
 * 서비스 등록 (AndroidManifest.xml)
   ```xml
-  <service android:name="net.huray.solfit.bluetooth.SolfitBluetoothService" />
+   <service android:name="net.huray.solfit.bluetooth.SolfitBluetoothService" android:enabled="true"/>
+   <service android:name="aicare.net.cn.iweightlibrary.wby.WBYService" android:enabled="true"/>
   ```
 
 * 서비스 시작(추후 업데이트 예정)
