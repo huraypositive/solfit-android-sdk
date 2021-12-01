@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
 }
 
@@ -8,7 +8,6 @@ android {
 
     defaultConfig {
         configurations.all { resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' } }
-        applicationId "net.huray.solfit.bluetooth"
         minSdk 21
         targetSdk 30
         versionCode 1
