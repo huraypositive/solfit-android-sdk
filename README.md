@@ -4,13 +4,13 @@
 
 # Compatibility
 ---------------
- * Minimum version android4.4 (API 19)
- * The Bluetooth version used by the device requires 4.0 and above
- * Dependent environment androidx
- * Supported cpu architecture: arm64-v8a; armeabi-v7a; x86; x86_64
+* Minimum version android4.4 (API 19)
+* The Bluetooth version used by the device requires 4.0 and above
+* Dependent environment androidx
+* Supported cpu architecture: arm64-v8a; armeabi-v7a; x86; x86_64
 
 # installation
- * Step 1. Add the JitPack repository to your build file
+* Step 1. Add the JitPack repository to your build file
 ```groovy
 build.gradle(Project)  
      allprojects {  
@@ -20,14 +20,14 @@ build.gradle(Project)
          }  
      }  
 ```
- * Step 2. Add the dependency  
+* Step 2. Add the dependency
 ```groovy
  build.gradle(app)  
      dependencies {  
          implementation 'com.github.hurayPositive:solfit-android-sdk:$latestVersion'  
      }
 ```
-  * Step 3. Allow Project Repository
+* Step 3. Allow Project Repository
 ```groovy
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -79,7 +79,7 @@ dependencyResolutionManagement {
     override fun onServiceConnected(name: ComponentName?, service: IBinder?){
         val serviceBinder = service as SolfitBluetoothService.ServiceBinder
         solfitBluetoothService = serviceBinder.getService().apply {
-        initialize(context, bluetoothScanCallBacks, bluetoothConnectionCallbacks, bluetoothDataCallbacks)
+        initialize(context, UserInfo(1,30,170), bluetoothScanCallBacks, bluetoothConnectionCallbacks, bluetoothDataCallbacks)
         } 
     }
     override fun onServiceDisconnected(name: ComponentName?){}
@@ -90,28 +90,26 @@ dependencyResolutionManagement {
       bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
   }
   ~~~
-  
+
 * 데이터 활용
   * 마지막 접속 유저 정보 가져오기
 ~~~kotlin
   SolfitDataManger().getInstance(context).readUserInfoData()
 ~~~
-  * 블루투스 연결 했던 기기 목록 가져오기
+* 블루투스 연결 했던 기기 목록 가져오기
 ~~~kotlin
   SolfitDataManger().getInstance(context).readDeviceInfoList()
 ~~~
-  * 기타 Function들도 위와 같은 방식으로 사용하면됩니다
+* 기타 Function들도 위와 같은 방식으로 사용하면됩니다
 ~~~kotlin
-  SolfitDataManger().getInstance(context).readUserInfoData()
-  SolfitDataManger().getInstance(context).readDeviceInfoList()
   SolfitDataManger().getInstance(context).updateDeviceInfo(deviceInfo)
   SolfitDataManger().getInstance(context).deleteDeviceInfo(deviceAddress)
   SolfitDataManger().getInstance(context).clearDeviceInfo()
 ~~~
 
 # Core Classes
-  * SolfitBluetoothService
-  > 블루투스 통신을 사용하기 위한 코어 서비스
+* SolfitBluetoothService
+> 블루투스 통신을 사용하기 위한 코어 서비스
 
 # Entity Classes
 * BroadData
@@ -143,13 +141,13 @@ dependencyResolutionManagement {
   * muscleMass: (Double)
   * protein: (Double)
   * fatLevel: (MoreFatData.FatLevel(Enum))
-  
+
 # Type Classes
 * ScanState
   > 블루투스 스캔 연결 상태 유형
-    * FAIL: 실패
-    * SCANNING: 연결성공
-    * DISCONNECTED: 연결해제
+  * FAIL: 실패
+  * SCANNING: 연결성공
+  * DISCONNECTED: 연결해제
 * ConnectState
   > 블루투스 기기 연결 상태 유형
   * DISCONNECTED
@@ -166,10 +164,10 @@ dependencyResolutionManagement {
   * SUCCESS
 * BodyCompositionState
   > 체성분 데이터 상태 유형
-  * START 
+  * START
   * FAIL
   * SUCCESS
-  
+
 # Interfaces
 * BluetoothScanCallbacks
   > 블루투스 스캔 상태 변화 감지 관련 콜백
@@ -218,20 +216,19 @@ dependencyResolutionManagement {
   * stopScan():Void 기기의 블루투스 스캔을 멈춘다
   * startConnect(address: String?):Void 전달받은 Mac Address에 해당하는 기기에 연결을 요청한다
   * disconnect():Void 연결된 기기에 연결 해제를 요청한다
-    
+
 * SolfitDataManager
   * readUserInfoData():UserInfo 마지막으로 접속했던 유저 정보를 가져옴
   * readDeviceInfoList():List<BroadData> 블루투스 연결했던 기기들의 목록을 가져옴
   * updateDeviceInfo(deviceInfo: BroadData): Void 블루투스 연결했던 기기들 중 특정 디바이스 정보를 업데이트함
   * deleteDeviceInfo(deviceAddress: String): Void 블루투스 연결했던 기기들 중 특정 디바이스 정보를 삭제함
   * clearDeviceInfo():Void 블루투스 연결했던 기기들의 목록을 전부 지움
-  
-# Release
-  * Step 1. GitHub에서 TAG 생성
-  * Step 2. 생성한 TAG Release
-  * Step 3. https://jitpack.io/ 홈페이지 접속 후, GitHub repo url 입력('hurayPositive/solfit-android-sdk')
-  * Step 4. 로그 확인을 통해 정상적으로 Publish 되었는지 확인
-    
+
+# Library Publish
+* Step 1. GitHub에서 TAG 생성
+* Step 2. 생성한 TAG Release
+* Step 3. https://jitpack.io/ 홈페이지 접속 후, GitHub repo url 입력('hurayPositive/solfit-android-sdk')
+* Step 4. 로그 확인을 통해 정상적으로 Publish 되었는지 확인 
+
 [releases]: https://github.com/huraypositive/solfit-android-sdk/releases
 [TedPermission]: https://github.com/ParkSangGwon/TedPermission
->>>>>>> development
