@@ -3,6 +3,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.2.2"
@@ -15,16 +16,5 @@ buildscript {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        mavenCentral()
-        mavenLocal()
-        maven { url "https://jitpack.io" }
-        maven { url "https://devrepo.kakao.com/nexus/content/groups/public/" } // 카카오SDK 레파지토리
-    }
 }
 
