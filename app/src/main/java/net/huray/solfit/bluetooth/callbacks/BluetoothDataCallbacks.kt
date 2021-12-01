@@ -1,20 +1,23 @@
 package net.huray.solfit.bluetooth.callbacks
 
-import aicare.net.cn.iweightlibrary.entity.AlgorithmInfo
-import aicare.net.cn.iweightlibrary.entity.BodyFatData
-import aicare.net.cn.iweightlibrary.entity.DecimalInfo
-import aicare.net.cn.iweightlibrary.entity.WeightData
+import cn.net.aicare.algorithmutil.BodyFatData
+import cn.net.aicare.MoreFatData
+import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
+import net.huray.solfit.bluetooth.data.enums.WeightState
 
 interface BluetoothDataCallbacks {
-    fun onGetWeightData(weightData: WeightData)
 
-    fun onGetSettingStatus(status: Int)
+    /**
+     * STATE: WeightState_START
+     *        WeightState_WAITING
+     *        WeightState_SUCCESS
+     */
+    fun onGetWeight(state: WeightState, weightData: Double?)
 
-    fun onGetResult(index: Int, result: String)
-
-    fun onGetFatData(b: Boolean, bodyFatData: BodyFatData)
-
-    fun onGetDecimalInfo(decimalInfo: DecimalInfo)
-
-    fun onGetAlgorithmInfo(algorithmInfo: AlgorithmInfo)
+    /**
+     * STATE: BodyCompositionState_START
+     *        BodyCompositionState_FAIL
+     *        BodyCompositionState_SUCCESS
+     */
+    fun onGetBodyComposition(state: BodyCompositionState, bodyFatData: BodyFatData?, moreFatData: MoreFatData?)
 }
