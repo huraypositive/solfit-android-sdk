@@ -166,6 +166,7 @@ open class SolfitBluetoothService : Service() {
         this.bluetoothScanCallbacks = bluetoothScanCallbacks
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
+        AiFitSDK.getInstance().init(this)
     }
 
     private fun onInitialize() {
@@ -347,8 +348,7 @@ open class SolfitBluetoothService : Service() {
         TedPermission.with(context)
             .setPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+                Manifest.permission.ACCESS_COARSE_LOCATION)
             .setDeniedMessage(context.getString(R.string.error_denied_permission))
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {
@@ -358,7 +358,6 @@ open class SolfitBluetoothService : Service() {
                         handler.postDelayed(stopScanRunnable, 60000L)
                     }
                 }
-
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
                     bluetoothScanCallbacks?.onScan(
                         ScanState.FAIL,context.getString(R.string.error_denied_permission),null

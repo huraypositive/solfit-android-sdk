@@ -126,7 +126,6 @@ class UserActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //Solfitbluetooth Setting
-        AiFitSDK.getInstance().init(this)
         serviceBind()
         solfitDataManager = SolfitDataManager.getInstance(this)
 
