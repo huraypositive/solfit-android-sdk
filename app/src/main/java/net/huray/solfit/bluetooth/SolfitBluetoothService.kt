@@ -157,7 +157,7 @@ open class SolfitBluetoothService : Service() {
     }
 
     fun initialize(
-        context: Context,
+        context: Context,userInfo: UserInfo,
         bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
         bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null,
         bluetoothDataCallbacks: BluetoothDataCallbacks? = null,
@@ -167,6 +167,7 @@ open class SolfitBluetoothService : Service() {
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
         AiFitSDK.getInstance().init(this)
+        SolfitDataManager.getInstance(this).saveUserInfoData(userInfo)
     }
 
     private fun onInitialize() {
