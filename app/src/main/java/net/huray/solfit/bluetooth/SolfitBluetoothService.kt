@@ -220,6 +220,18 @@ open class SolfitBluetoothService : Service() {
         }
     }
 
+    fun setBluetoothScanCallbacks(bluetoothScanCallbacks: BluetoothScanCallbacks?){
+        this.bluetoothScanCallbacks = bluetoothScanCallbacks
+    }
+
+    fun setBluetoothConnectionCallbacks(bluetoothConnectionCallbacks: BluetoothConnectionCallbacks?){
+        this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
+    }
+
+    fun setBluetoothDataCallbacks(bluetoothDataCallbacks: BluetoothDataCallbacks?){
+        this.bluetoothDataCallbacks = bluetoothDataCallbacks
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
