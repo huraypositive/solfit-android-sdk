@@ -220,6 +220,10 @@ open class SolfitBluetoothService : Service() {
         }
     }
 
+    fun setuserInfo(userInfo: UserInfo){
+        this.userInfo = userInfo
+    }
+
     fun setBluetoothScanCallbacks(bluetoothScanCallbacks: BluetoothScanCallbacks?){
         this.bluetoothScanCallbacks = bluetoothScanCallbacks
     }
