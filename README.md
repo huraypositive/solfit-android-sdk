@@ -76,9 +76,6 @@ dependencyResolutionManagement {
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 ```
 
-# RoadMap
-* Step 1. 
-
 # Usage
 * 서비스 등록 (AndroidManifest.xml)
 ```xml
@@ -87,6 +84,8 @@ dependencyResolutionManagement {
 ```
 
 * 서비스 시작
+  >> 서비스 연결 되면 서비스 Initialize. 유저 정보 및 상태값 콜백 메서드를 여기서 선언해줄 수 있다. 여기서 만약에 상태값 콜백 메서드를 선언하지 않아도
+  >> 하단에 설명되어있는 set Interface 메서드를 활용해서도 상태값 콜백 메서드를 선언 가능합니다
 ~~~kotlin
   private var serviceConnection = object : ServiceConnection {
     override fun onServiceConnected(name: ComponentName?, service: IBinder?){
@@ -124,6 +123,11 @@ dependencyResolutionManagement {
   solfitBluetoothService?.stopScan()
 ~~~
 
+* 스캔 상태 콜백 메서드 설정
+~~~kotlin
+  sofltiBluetoothService?.setBluetoothScanCallbacks(bluetoothScanCallbacks: BluetoothScanCallbacks)
+~~~
+
 * 블루투스 기기와 연결
 ~~~kotlin
   solfitBluetoothService?.connect(address: String?)
@@ -134,6 +138,16 @@ dependencyResolutionManagement {
   solfitBluetoothService?.disconnect()
 ~~~
 
+* 블루투스 기기 연결 상태 콜백 메서드 설정
+~~~kotlin
+  solfitBluetoothService?.setBluetoothConnectionCallbacks(bluetoothConnectionCallbacks: BluetoothConnectionCallbacks)
+~~~
+
+* 체중/체성분 데이터 상태 콜백 메서드 설정
+~~~kotlin
+  solfitBluetoothService?.setBluetoothDataCallbacks(bluetoothDataCallbacks: BluetoothDataCallbacks)
+~~~
+
 * 데이터 활용
   * 마지막 접속 유저 정보 가져오기
 ~~~kotlin
@@ -142,6 +156,7 @@ dependencyResolutionManagement {
 * 블루투스 연결 했던 기기 목록 가져오기
 ~~~kotlin
   SolfitDataManger().getInstance(context: Context).readDeviceInfoList()
+
 ~~~
 * 기타 Function들도 위와 같은 방식으로 사용하면됩니다
 ~~~kotlin
@@ -155,6 +170,12 @@ dependencyResolutionManagement {
 > 블루투스 통신을 사용하기 위한 코어 서비스
 
 # Entity Classes
+* UserInfo
+  > 고객 정보
+  * sex: 1(남성), 2(여성) (Int) 
+  * age: 나이(Int)
+  * height: 키(Int)
+  
 * BroadData
   > 디바이스 스캔 결과
   * name: 기기(String)
