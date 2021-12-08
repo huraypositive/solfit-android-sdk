@@ -49,15 +49,15 @@ class SolfitDataManager(private val context: Context) {
         }.apply()
     }
 
-    fun readUserInfoData() = UserInfo(
-                                userInfoSharedPreferences.getInt("sex",1),
-                                userInfoSharedPreferences.getInt("age",1),
-                                userInfoSharedPreferences.getInt("height",1))
+    fun readUserInfoData() =
+        UserInfo(userInfoSharedPreferences.getInt("sex",1),
+                 userInfoSharedPreferences.getInt("age",1),
+                 userInfoSharedPreferences.getInt("height",1))
 
     fun saveDeviceInfo(deviceInfo: BroadData){
+        if(deviceInfo.address == null) return
         val gson = GsonBuilder().create()
         val jsonDeviceInfo = gson.toJson(deviceInfo,BroadData::class.java)
-
         deviceInfoSharedPreferences.edit().putString(deviceInfo.address,jsonDeviceInfo).apply()
     }
 
