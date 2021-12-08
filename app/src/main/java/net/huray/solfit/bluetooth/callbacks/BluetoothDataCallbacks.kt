@@ -1,7 +1,7 @@
 package net.huray.solfit.bluetooth.callbacks
 
-import cn.net.aicare.algorithmutil.BodyFatData
 import cn.net.aicare.MoreFatData
+import cn.net.aicare.algorithmutil.BodyFatData
 import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
 import net.huray.solfit.bluetooth.data.enums.WeightState
 
@@ -19,5 +19,9 @@ interface BluetoothDataCallbacks {
      *        BodyCompositionState_FAIL
      *        BodyCompositionState_SUCCESS
      */
-    fun onGetBodyComposition(state: BodyCompositionState, bodyFatData: BodyFatData?, moreFatData: MoreFatData?)
+    fun onGetBodyComposition(
+        state: BodyCompositionState,
+        bodyFatData: BodyFatData?,
+        moreFatData: MoreFatData?
+    )
 }

@@ -1,7 +1,6 @@
 package net.huray.solfit.bluetooth
 
 import aicare.net.cn.iweightlibrary.AiFitSDK
-import aicare.net.cn.iweightlibrary.bleprofile.BleProfileService
 import aicare.net.cn.iweightlibrary.entity.*
 import aicare.net.cn.iweightlibrary.utils.AicareBleConfig
 import aicare.net.cn.iweightlibrary.utils.AicareBleConfig.SettingStatus.*
@@ -28,7 +27,6 @@ import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
 import net.huray.solfit.bluetooth.data.enums.ConnectState
 import net.huray.solfit.bluetooth.data.enums.ScanState
 import net.huray.solfit.bluetooth.data.enums.WeightState
-import java.lang.Exception
 
 open class SolfitBluetoothService : Service() {
     private val TAG = this::class.java.simpleName
@@ -40,8 +38,6 @@ open class SolfitBluetoothService : Service() {
     private var adapter: BluetoothAdapter? = null
 
     private lateinit var userInfo: UserInfo
-    private var previousUserInfo: UserInfo? = null
-
     private lateinit var algorithmInfo: AlgorithmInfo
     private var mWeight: Double? = 0.0
     private val mDeviceList = ArrayList<BroadData>()
@@ -95,7 +91,7 @@ open class SolfitBluetoothService : Service() {
             val action = intent?.action
             val result: String?
             val cmd: String?
-            when(action) {
+            when (action) {
                 ACTION_STATE_CHANGED -> {
                     did = intent.getIntExtra(EXTRA_STATE, -1)
                     bluetoothStateChanged(did)
@@ -103,18 +99,25 @@ open class SolfitBluetoothService : Service() {
                 ACTION_CONNECT_STATE_CHANGED -> {
                     did = intent.getIntExtra(EXTRA_CONNECT_STATE, -1)
                     result = intent.getStringExtra(EXTRA_DEVICE_ADDRESS)
-                    when(ConnectState.getConnectState(did)){
+                    when (ConnectState.getConnectState(did)) {
                         ConnectState.CONNECTED, ConnectState.INDICATION_SUCCESS -> {
                             mIsConnected = true
-                            SolfitDataManager.getInstance(context!!).saveDeviceInfo(BroadData().apply {
-                                address = result
-                            })
+                            SolfitDataManager.getInstance(context!!)
+                                .saveDeviceInfo(BroadData().apply {
+                                    address = result
+                                })
                         }
-                        ConnectState.ERROR,ConnectState.TIME_OUT,ConnectState.DISCONNECTED, ConnectState.UNKNOWN
-                            -> mIsConnected = false
-                        else -> {}
+                        ConnectState.ERROR, ConnectState.TIME_OUT, ConnectState.DISCONNECTED, ConnectState.UNKNOWN
+                        -> mIsConnected = false
+                        else -> {
+                        }
                     }
-                    bluetoothConnectionCallbacks?.onStateChanged(result, ConnectState.getConnectState(did), null, null)
+                    bluetoothConnectionCallbacks?.onStateChanged(
+                        result,
+                        ConnectState.getConnectState(did),
+                        null,
+                        null
+                    )
                 }
                 ACTION_CONNECT_ERROR -> {
                     cmd = intent.getStringExtra(EXTRA_ERROR_MSG)
@@ -136,11 +139,15 @@ open class SolfitBluetoothService : Service() {
                     did = intent.getIntExtra(EXTRA_SETTING_STATUS, -1)
                     when (did) {
                         NORMAL, LOW_POWER
-                        -> bluetoothDataCallbacks?.onGetWeight(WeightState.getWeightState(did),
-                            null)
+                        -> bluetoothDataCallbacks?.onGetWeight(
+                            WeightState.getWeightState(did),
+                            null
+                        )
                         ADC_MEASURED_ING, ADC_ERROR
-                        -> bluetoothDataCallbacks?.onGetBodyComposition(BodyCompositionState.getBodyCompositionState(did),
-                            null, null)
+                        -> bluetoothDataCallbacks?.onGetBodyComposition(
+                            BodyCompositionState.getBodyCompositionState(did),
+                            null, null
+                        )
                     }
                 }
                 ACTION_ALGORITHM_INFO -> {
@@ -157,7 +164,7 @@ open class SolfitBluetoothService : Service() {
     }
 
     fun initialize(
-        context: Context,userInfo: UserInfo,
+        context: Context, userInfo: UserInfo,
         bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
         bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null,
         bluetoothDataCallbacks: BluetoothDataCallbacks? = null,
@@ -209,7 +216,7 @@ open class SolfitBluetoothService : Service() {
             Log.e("AiFitSDK", "请先调用AiFitSDK.getInstance().init()")
             throw SecurityException("请先调用AiFitSDK.getInstance().init().(Please call AiFitSDK.getInstance().init() first.)")
         }
-        if(!mIsConnected) {
+        if (!mIsConnected) {
             bindService(address)
         }
     }
@@ -218,25 +225,25 @@ open class SolfitBluetoothService : Service() {
         if (mIsScanning) {
             stopScan()
         }
-        if(mIsConnected){
+        if (mIsConnected) {
             mService?.disconnect()
             unbindService()
         }
     }
 
-    fun setuserInfo(userInfo: UserInfo){
+    fun setUserInfo(userInfo: UserInfo) {
         this.userInfo = userInfo
     }
 
-    fun setBluetoothScanCallbacks(bluetoothScanCallbacks: BluetoothScanCallbacks?){
+    fun setBluetoothScanCallbacks(bluetoothScanCallbacks: BluetoothScanCallbacks?) {
         this.bluetoothScanCallbacks = bluetoothScanCallbacks
     }
 
-    fun setBluetoothConnectionCallbacks(bluetoothConnectionCallbacks: BluetoothConnectionCallbacks?){
+    fun setBluetoothConnectionCallbacks(bluetoothConnectionCallbacks: BluetoothConnectionCallbacks?) {
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
     }
 
-    fun setBluetoothDataCallbacks(bluetoothDataCallbacks: BluetoothDataCallbacks?){
+    fun setBluetoothDataCallbacks(bluetoothDataCallbacks: BluetoothDataCallbacks?) {
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
     }
 
@@ -289,7 +296,7 @@ open class SolfitBluetoothService : Service() {
             throw SecurityException("请先调用AiFitSDK.getInstance().init().(Please call AiFitSDK.getInstance().init() first.)")
         }
 
-        if(!isBlEAvailable()) {
+        if (!isBlEAvailable()) {
             bluetoothScanCallbacks?.onScan(
                 ScanState.FAIL,
                 resources.getString(R.string.error_feature_not_supported), null
@@ -297,7 +304,7 @@ open class SolfitBluetoothService : Service() {
             return
         }
 
-        if(!isBLEEnabled()) {
+        if (!isBLEEnabled()) {
             bluetoothScanCallbacks?.onScan(
                 ScanState.FAIL,
                 resources.getString(R.string.error_bluetooth_not_enabled), null
@@ -306,7 +313,7 @@ open class SolfitBluetoothService : Service() {
             return
         }
 
-        if(!hasPermissions()) {
+        if (!hasPermissions()) {
             requestPermissions()
             return
         }
@@ -330,8 +337,8 @@ open class SolfitBluetoothService : Service() {
         }
     }
 
-    private fun addDevice(device: BroadData){
-        if(!mDeviceList.contains(device)){
+    private fun addDevice(device: BroadData) {
+        if (!mDeviceList.contains(device)) {
             mDeviceList.add(device)
         }
     }
@@ -370,7 +377,8 @@ open class SolfitBluetoothService : Service() {
         TedPermission.with(context)
             .setPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
             .setDeniedMessage(context.getString(R.string.error_denied_permission))
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {
@@ -380,9 +388,10 @@ open class SolfitBluetoothService : Service() {
                         handler.postDelayed(stopScanRunnable, 60000L)
                     }
                 }
+
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
                     bluetoothScanCallbacks?.onScan(
-                        ScanState.FAIL,context.getString(R.string.error_denied_permission),null
+                        ScanState.FAIL, context.getString(R.string.error_denied_permission), null
                     )
                 }
             })
