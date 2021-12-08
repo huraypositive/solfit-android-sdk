@@ -186,25 +186,25 @@ dependencyResolutionManagement {
   * deviceType: (Int)
 * BodyFatData
   > 체지방 데이터
-  * bmi: (Double)
-  * bfr: (Double)
-  * sfr: (Double)
-  * uvi: (Int)
-  * rom: (Double)
-  * bmr: (Int)
-  * bm: (Double)
-  * vwc: (Double)
-  * bodyAge: (Int)
-  * pp: (Double)
+  * bmi: 체질량 지수(Double)
+  * bfr: 체지방률(%)(Double)
+  * sfr: 피하 지방율(%)(Double)
+  * uvi: 내장 지방 지수(Int)
+  * rom: 근육율(%)(Double)
+  * bmr: 기초 대사량(kcal)(Int)
+  * bm: 골량(kg)(Double)
+  * vwc: 수분함유율(%)(Double)
+  * bodyAge: 신체나이(Int)
+  * pp: 단백질 함유율(%)(Double)
 * MoreFatData
   > 표준 체중, 지방, 근육량 등
-  * standardWeight: (Double)
-  * controlWeight: (Double)
-  * fat: (Double)
-  * removeFatWeight: (Double)
-  * muscleMass: (Double)
-  * protein: (Double)
-  * fatLevel: (MoreFatData.FatLevel(Enum))
+  * standardWeight: 표준 체중(kg)(Double)
+  * controlWeight: 실제 체중과 표준값의 차이(kg)(Double)
+  * fat: 지방량(kg)(Double)
+  * removeFatWeight: 지방을 제외한 체중(kg)(Double)
+  * muscleMass: 근육량(kg)(Double)
+  * protein: 단백질 함유량(kg)(Double)
+  * fatLevel: 비만 등급(MoreFatData.FatLevel(Enum))
 
 # Type Classes
 * ScanState
