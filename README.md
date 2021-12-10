@@ -1,6 +1,7 @@
 # SolfitBluetooth
 -----------------
 블루투스 기기 통신을 위한 라이브러리
+>> 샘플 앱 보러 가기 (https://github.com/huraypositive/solfit-android-sdk-sample)
 
 # Language
 * Kotlin
@@ -16,10 +17,6 @@
 
 # Gradle
 * Gradle Version: 4.2.2
-
-# Branch
-* main: Library Release Branch
-* sample: Sample App Branch
 
 # Compatibility
 ---------------
@@ -205,7 +202,7 @@ dependencyResolutionManagement {
   * muscleMass: 근육량(kg)(Double)
   * protein: 단백질 함유량(kg)(Double)
   * fatLevel: 비만 등급(MoreFatData.FatLevel(Enum))
-
+ㅍ
 # Type Classes
 * ScanState
   > 블루투스 스캔 연결 상태 유형
