@@ -1,7 +1,7 @@
 # SolfitBluetooth
 -----------------
 블루투스 기기 통신을 위한 라이브러리
->> 샘플 앱 보러 가기 (https://github.com/huraypositive/solfit-android-sdk-sample)
+> 샘플 앱 보러 가기 (https://github.com/huraypositive/solfit-android-sdk-sample)
 
 # Language
 * Kotlin
