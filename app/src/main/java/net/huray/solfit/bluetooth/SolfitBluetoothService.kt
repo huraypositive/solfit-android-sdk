@@ -143,17 +143,11 @@ open class SolfitBluetoothService : Service() {
                             null
                         )
                         ADC_MEASURED_ING, ADC_ERROR
-                        -> if (userInfo == null) {
-                            bluetoothDataCallbacks?.onGetBodyComposition(
-                                BodyCompositionState.FAIL,
-                                null, null
-                            )
-                        } else {
-                            bluetoothDataCallbacks?.onGetBodyComposition(
-                                BodyCompositionState.getBodyCompositionState(did),
-                                null, null
-                            )
-                        }
+                        -> bluetoothDataCallbacks?.onGetBodyComposition(
+                            BodyCompositionState.getBodyCompositionState(did),
+                            null, null
+                        )
+
                     }
                 }
                 ACTION_ALGORITHM_INFO -> {
@@ -166,6 +160,10 @@ open class SolfitBluetoothService : Service() {
                             getMoreFatData()
                         )
                     } else {
+                        bluetoothDataCallbacks?.onGetBodyComposition(
+                            BodyCompositionState.FAIL_USER_INFO_NOT_INITIALIZED,
+                            null, null
+                        )
                         Log.e(
                             TAG,
                             "UserInfo not initialized, Please call setUserInfo(userInfo: UserInfo)"
