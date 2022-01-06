@@ -211,7 +211,7 @@ dependencyResolutionManagement {
   * muscleMass: 근육량(kg)(Double)
   * protein: 단백질 함유량(kg)(Double)
   * fatLevel: 비만 등급(MoreFatData.FatLevel(Enum))
-ㅍ
+
 # Type Classes
 * ScanState
   > 블루투스 스캔 연결 상태 유형
@@ -237,6 +237,7 @@ dependencyResolutionManagement {
   * START
   * FAIL
   * SUCCESS
+  * FAIL_USER_INFO_NOT_INITIALIZED
 
 # Interfaces
 * BluetoothScanCallbacks
@@ -275,6 +276,7 @@ dependencyResolutionManagement {
     /**
      * STATE: BodyCompositionState_START
      *        BodyCompositionState_FAIL
+     *        BodyCompositionState_FAIL_USER_INFO_NOT_INITIALIZED
      *        BodyCompositionState_SUCCESS
      */
     fun onGetBodyComposition(state: BodyCompositionState, bodyFatData: BodyFatData?, moreFatData: MoreFatData?)
