@@ -51,7 +51,6 @@ open class SolfitBluetoothService : Service() {
     private val startScanRunnable = Runnable { startScan() }
     private val stopScanRunnable = Runnable {
         stopScan()
-        handler.post(startScanRunnable)
     }
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
@@ -290,7 +289,7 @@ open class SolfitBluetoothService : Service() {
         return adapter != null && adapter.isEnabled
     }
 
-    fun startScan() {
+    fun startScan(timeout: Long = 60000L) {
         if (!AiFitSDK.getInstance().isInitOk) {
             Log.e("AiFitSDK", "请先调用AiFitSDK.getInstance().init()")
             throw SecurityException("请先调用AiFitSDK.getInstance().init().(Please call AiFitSDK.getInstance().init() first.)")
@@ -321,7 +320,7 @@ open class SolfitBluetoothService : Service() {
         if (!mIsScanning) {
             adapter!!.startLeScan(mLEScanCallback)
             mIsScanning = true
-            handler.postDelayed(stopScanRunnable, 60000L)
+            handler.postDelayed(stopScanRunnable, timeout)
         }
     }
 
