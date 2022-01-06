@@ -81,8 +81,9 @@ dependencyResolutionManagement {
 ```
 
 * 서비스 시작
-  >> 서비스 연결 되면 서비스 Initialize. 유저 정보 및 상태값 콜백 메서드를 여기서 선언해줄 수 있다. 여기서 만약에 상태값 콜백 메서드를 선언하지 않아도
-  >> 하단에 설명되어있는 set Interface 메서드를 활용해서도 상태값 콜백 메서드를 선언 가능합니다
+  > 서비스 연결 되면 서비스 Initialize. 유저 정보 및 상태값 콜백 메서드를 여기서 선언해줄 수 있습니다\. 여기서 만약에 상태값 콜백 메서드를 선언하지 않아도
+  > 하단에 설명되어있는 set Interface 메서드를 활용해서도 상태값 콜백 메서드를 선언 가능합니다
+  > UserInfo도 초기화 해주지 않아도 체성분값 계산을 제외한 기능들을 사용 가능합니다(스캔, 체중 계산 등)
 ~~~kotlin
   private var serviceConnection = object : ServiceConnection {
     override fun onServiceConnected(name: ComponentName?, service: IBinder?){
@@ -146,11 +147,18 @@ dependencyResolutionManagement {
   solfitBluetoothService?.setBluetoothDataCallbacks(bluetoothDataCallbacks: BluetoothDataCallbacks)
 ~~~
 
+* 유저 정보 입력
+> 유저 정보가 입력되어야 체성분값 계산 가능
+~~~kotlin
+  solfitBluetoothService?.setUserInfo(userInfo)
+~~~
+
 * 데이터 활용
   * 마지막 접속 유저 정보 가져오기
 ~~~kotlin
   SolfitDataManger().getInstance(context: Context).readUserInfoData()
 ~~~
+
 * 블루투스 연결 했던 기기 목록 가져오기
 ~~~kotlin
   SolfitDataManger().getInstance(context: Context).readDeviceInfoList()
