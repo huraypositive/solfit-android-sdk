@@ -112,7 +112,8 @@ dependencyResolutionManagement {
 
 * 스캔 시작
 ~~~kotlin
-  solfitBluetoothService?.startScan()
+  solfitBluetoothService?.startScan() // 60초동안 스캔
+  solfitBluetoothService?.startScan(timeout: Long) // timeout 시간동안 스캔 (ex: 30000L = 30초)
 ~~~
 
 * 스캔 종료
