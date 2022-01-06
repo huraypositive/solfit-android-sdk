@@ -37,7 +37,7 @@ open class SolfitBluetoothService : Service() {
     private var mIsConnected = false
     private var adapter: BluetoothAdapter? = null
 
-    private lateinit var userInfo: UserInfo
+    private var userInfo: UserInfo? = null
     private lateinit var algorithmInfo: AlgorithmInfo
     private var mWeight: Double? = 0.0
     private val mDeviceList = ArrayList<BroadData>()
@@ -152,18 +152,22 @@ open class SolfitBluetoothService : Service() {
                 ACTION_ALGORITHM_INFO -> {
                     algorithmInfo =
                         intent.getSerializableExtra(EXTRA_ALGORITHM_INFO) as AlgorithmInfo
-                    bluetoothDataCallbacks?.onGetBodyComposition(
-                        BodyCompositionState.SUCCESS,
-                        getBodyFatData(),
-                        getMoreFatData()
-                    )
+                    if(userInfo != null) {
+                        bluetoothDataCallbacks?.onGetBodyComposition(
+                            BodyCompositionState.SUCCESS,
+                            getBodyFatData(),
+                            getMoreFatData()
+                        )
+                    } else {
+                        Log.e(TAG, "Please use setUserInfo(userInfo: UserInfo)")
+                    }
                 }
             }
         }
     }
 
     fun initialize(
-        context: Context, userInfo: UserInfo,
+        context: Context, userInfo: UserInfo? = null,
         bluetoothScanCallbacks: BluetoothScanCallbacks? = null,
         bluetoothConnectionCallbacks: BluetoothConnectionCallbacks? = null,
         bluetoothDataCallbacks: BluetoothDataCallbacks? = null,
@@ -174,7 +178,9 @@ open class SolfitBluetoothService : Service() {
         this.bluetoothConnectionCallbacks = bluetoothConnectionCallbacks
         this.bluetoothDataCallbacks = bluetoothDataCallbacks
         AiFitSDK.getInstance().init(this)
-        SolfitDataManager.getInstance(this).saveUserInfoData(userInfo)
+        if (userInfo != null) {
+            SolfitDataManager.getInstance(this).saveUserInfoData(userInfo)
+        }
     }
 
     private fun onInitialize() {
@@ -344,17 +350,16 @@ open class SolfitBluetoothService : Service() {
 
     private fun getBodyFatData() = AicareBleConfig.getBodyFatData(
         algorithmInfo.algorithmId,
-        userInfo.sex,
-        userInfo.age,
+        userInfo!!.sex, userInfo!!.age,
         ParseData.getKgWeight(mWeight?.times(10.0)!!, algorithmInfo.decimalInfo).toDouble(),
-        userInfo.height, algorithmInfo.adc
+        userInfo!!.height, algorithmInfo.adc
     )
 
     private fun getBodyFatRate() = getBodyFatData().bfr.toFloat()
 
     private fun getMoreFatData() = AicareBleConfig.getMoreFatData(
-        userInfo.sex,
-        userInfo.height,
+        userInfo!!.sex,
+        userInfo!!.height,
         mWeight!!,
         getBodyFatRate().toDouble(),
         getBodyFatData().rom,
