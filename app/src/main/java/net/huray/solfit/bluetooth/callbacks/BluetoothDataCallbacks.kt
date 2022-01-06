@@ -17,6 +17,7 @@ interface BluetoothDataCallbacks {
     /**
      * STATE: BodyCompositionState_START
      *        BodyCompositionState_FAIL
+     *        BodyCompositionState_FAIL_USER_INFO_NOT_INITIALIZED
      *        BodyCompositionState_SUCCESS
      */
     fun onGetBodyComposition(
