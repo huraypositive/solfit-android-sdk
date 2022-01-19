@@ -2,8 +2,7 @@ package net.huray.solfit.bluetooth.data
 
 import aicare.net.cn.iweightlibrary.entity.BroadData
 
-class BroadData: BroadData() {
-
+class BroadDataWrapper: BroadData() {
     override fun getName(): String {
         return super.getName()
     }

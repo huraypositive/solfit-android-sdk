@@ -3,7 +3,7 @@ package net.huray.solfit.bluetooth.data
 import aicare.net.cn.iweightlibrary.entity.BodyFatData
 import aicare.net.cn.iweightlibrary.entity.DecimalInfo
 
-class BodyFatData: BodyFatData() {
+class BodyFatDataWrapper: BodyFatData() {
 
     override fun getDate(): String {
         return super.getDate()
