@@ -10,10 +10,10 @@
 * Arctic Fox | 2020.3.1 Patch 3
 
 # Kotlin & SDK Version
-* Kotlin Version: 1.5.20
+* Kotlin Version: 1.6.10
 * minSdkVersion: 21
-* targetSdkVersion: 30
-* compileSdkVersion: 30
+* targetSdkVersion: 31
+* compileSdkVersion: 31
 
 # Gradle
 * Gradle Version: 4.2.2
