@@ -14,6 +14,7 @@ import android.bluetooth.BluetoothAdapter.*
 import android.bluetooth.BluetoothManager
 import android.content.*
 import android.os.Binder
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.text.TextUtils
@@ -379,18 +380,42 @@ open class SolfitBluetoothService : Service() {
         bluetoothDataCallbacks?.onGetWeight(WeightState.SUCCESS, mWeight)
     }
 
-    private fun hasPermissions(): Boolean = TedPermission.isGranted(
-        context,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-
-    private fun requestPermissions() {
-        TedPermission.with(context)
-            .setPermissions(
+    private fun hasPermissions(): Boolean {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            TedPermission.isGranted(
+                context,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
+        } else {
+            TedPermission.isGranted(
+                context,
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        }
+    }
+
+    private fun requestPermissions() {
+        val builder = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            TedPermission.with(context)
+                .setPermissions(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+        } else {
+            TedPermission.with(context)
+                .setPermissions(
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+        }
+
+        builder
             .setDeniedMessage(context.getString(R.string.error_denied_permission))
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {
