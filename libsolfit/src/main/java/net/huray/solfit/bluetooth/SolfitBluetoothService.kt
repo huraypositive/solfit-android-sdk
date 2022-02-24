@@ -20,8 +20,8 @@ import android.os.IBinder
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.TedPermission
+/*import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission*/
 import net.huray.solfit.bluetooth.callbacks.*
 import net.huray.solfit.bluetooth.data.UserInfo
 import net.huray.solfit.bluetooth.data.enums.BodyCompositionState
@@ -327,10 +327,10 @@ open class SolfitBluetoothService : Service() {
             return
         }
 
-        if (!hasPermissions()) {
+        /*if (!hasPermissions()) {
             requestPermissions()
             return
-        }
+        }*/
 
         if (!mIsScanning) {
             adapter!!.startLeScan(mLEScanCallback)
@@ -380,7 +380,7 @@ open class SolfitBluetoothService : Service() {
         bluetoothDataCallbacks?.onGetWeight(WeightState.SUCCESS, mWeight)
     }
 
-    private fun hasPermissions(): Boolean {
+    /*private fun hasPermissions(): Boolean {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             TedPermission.isGranted(
                 context,
@@ -396,9 +396,9 @@ open class SolfitBluetoothService : Service() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
         }
-    }
+    }*/
 
-    private fun requestPermissions() {
+    /*private fun requestPermissions() {
         val builder = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             TedPermission.with(context)
                 .setPermissions(
@@ -433,7 +433,7 @@ open class SolfitBluetoothService : Service() {
                 }
             })
             .check()
-    }
+    }*/
 
     private fun showBLEDialog() {
         val enableIntent = Intent(ACTION_REQUEST_ENABLE)
