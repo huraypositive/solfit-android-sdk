@@ -217,6 +217,7 @@ open class SolfitBluetoothService : Service() {
 
     private fun unbindService() {
         try {
+            stopService(Intent(this, WBYService::class.java))
             unbindService(mServiceConnection)
             mService = null
         } catch (e: IllegalArgumentException) {
