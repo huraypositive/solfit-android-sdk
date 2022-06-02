@@ -230,11 +230,8 @@ open class SolfitBluetoothService : Service() {
             Log.e("AiFitSDK", "请先调用AiFitSDK.getInstance().init()")
             throw SecurityException("请先调用AiFitSDK.getInstance().init().(Please call AiFitSDK.getInstance().init() first.)")
         }
-        if (!mIsConnected) {
-            bindService(address)
-        } else {
-            disconnect()
-        }
+
+        bindService(address)
     }
 
     fun disconnect() {
