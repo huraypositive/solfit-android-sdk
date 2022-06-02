@@ -232,6 +232,8 @@ open class SolfitBluetoothService : Service() {
         }
         if (!mIsConnected) {
             bindService(address)
+        } else {
+            disconnect()
         }
     }
 
