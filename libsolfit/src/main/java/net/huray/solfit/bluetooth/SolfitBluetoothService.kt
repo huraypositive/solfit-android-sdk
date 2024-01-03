@@ -200,10 +200,18 @@ open class SolfitBluetoothService : Service() {
     override fun onBind(intent: Intent?): IBinder? {
         onInitialize()
         bindService(null as String?)
-        application.registerReceiver(
-            commonBroadcastReceiver,
-            makeIntentFilter()
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            application.registerReceiver(
+                commonBroadcastReceiver,
+                makeIntentFilter(),
+                Context.RECEIVER_EXPORTED
+            )
+        } else {
+            application.registerReceiver(
+                commonBroadcastReceiver,
+                makeIntentFilter()
+            )
+        }
         return binder
     }
 
